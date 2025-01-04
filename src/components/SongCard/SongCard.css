@@ -1,0 +1,27 @@
+.song-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin: 16px;
+  text-align: center;
+  width: 200px;
+}
+
+.card-content.hidden {
+  background-color: #f0f0f0;
+}
+
+.card-content.revealed {
+  background-color: #fff;
+  font-weight: bold;
+}
+
+button {
+  padding: 8px 12px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

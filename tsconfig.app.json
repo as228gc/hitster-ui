@@ -1,26 +1,26 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    /* Target modern JavaScript */
     "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+    /* Module resolution for Node.js */
+    "moduleResolution": "node",
+
+    /* JSX settings for React */
     "jsx": "react-jsx",
 
-    /* Linting */
+    /* TypeScript's strict type-checking options */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Ignore library declaration checks */
+    "skipLibCheck": true,
+
+    /* Prevent TypeScript from emitting JS files */
+    "noEmit": true
   },
   "include": ["src"]
 }
