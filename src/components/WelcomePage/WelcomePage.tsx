@@ -9,7 +9,7 @@ const WelcomePage: React.FC = () => {
   const createPlayer = () => {
     if (playerName.trim()) {
       apiClient
-        .post("/players", { name: playerName })
+        .post("/game/players/add", { name: playerName })
         .then((response: { data: { name: string; }; }) => {
           alert(`Welcome, ${response.data.name}!`);
           setPlayerCreated(true); // Mark player as created
