@@ -7,7 +7,7 @@ interface CardProps {
   songUrl: string;
 }
 
-export const Card: React.FC<CardProps> = ({ title: string, artist: string, releaseYear: number, songUrl: string }): ReactElement => {
+export const Card: React.FC<CardProps> = ({ title, artist, releaseYear, songUrl}): ReactElement => {
   const [isRevealed, setIsRevealed] = useState(false); // Track if the card details are shown
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null); // Store the audio instance
 
