@@ -2,9 +2,7 @@ import './App.css'
 import { TeamProvider } from './context/TeamContext'
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { SongCard } from './components/SongCard/SongCard';
 import WelcomePage from "./components/WelcomePage/WelcomePage";
-import ConfigureTeamsPage from "./components/ConfigureTeamsPage/ConfigureTeamsPage";
 
 function App() {
 
@@ -21,7 +19,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="/configure-teams" element={<ConfigureTeamsPage />} />
           </Routes>
         </Router>
       </TeamProvider>
