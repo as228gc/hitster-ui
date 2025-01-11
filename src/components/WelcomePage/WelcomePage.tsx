@@ -10,8 +10,7 @@ const WelcomePage: React.FC = () => {
     if (playerName.trim()) {
       apiClient
         .post("/lobby/players/add", { name: playerName })
-        .then((response: { data: { name: string; }; }) => {
-          alert(`Welcome, ${response.data.name}!`);
+        .then(() => {
           setPlayerCreated(true); // Mark player as created
         })
         .catch((error: Error) => {
