@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 .container {
   display: flex;
@@ -8,20 +10,26 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #1f1f1f, #2b2b2b, #404040); /* Gray gradient */
-  color: #ffd700; /* Gold text */
+  background: linear-gradient(180deg, #0D0D0D, #031321); /* Turquoise gradient */
+  color: #FFF; /* Gold text */
   text-align: center;
 }
 
 .title {
   font-size: 3rem;
-  font-weight: bold;
   margin-bottom: 20px;
-  background: linear-gradient(45deg, #FFD700, #FFC107, #FFB300); /* Gold gradient */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'Michroma', sans-serif;
+  color: #FFF; /* Text color */
+  text-shadow: 
+    0 0 4px #FF99FF,   /* Small inner glow */
+    0 0 10px #FF99FF,  /* Larger outer glow */
+    0 0 15px #FF66FF,  /* Even larger glow */
+    0 0 20px #FF33CC,  /* Farther glow for depth */
+    0 0 25px #FF00AA;  /* Farthest glow for intensity */
+  font-family: 'Tilt Neon', serif;
+  text-align: center;
+  margin-bottom: 3rem;
 }
+
 
 .form {
   display: flex;
@@ -35,31 +43,53 @@
   gap: 20px;
 }
 
-input {
+#name-input {
   padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
-  border: 2px solid #FFD700; /* Gold border */
-  background-color: #2B2B2B;
-  color: #FFD700;
+  border: 2px solid #FFF; /* White border */
+  color: #FFF; /* White text */
+  background: transparent; /* Transparent background */
+  outline: none; /* Removes the yellow focus outline */
+  background-color: transparent;
+  box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF; /* Neon stroke */
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
+#name-input:focus {
+  border-color: #33FFFF; /* Change border to match stroke on focus */
+  box-shadow: 0 0 12px #33FFFF, 0 0 24px #33FFFF; /* Stronger glow on focus */
+}
+
+
+#name-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+#submit-name-button {
+  font-size: 1.4rem;
+  width: fit-content;
+  margin: auto;
+  text-shadow: 
+    0 0 4px #FF99FF,   /* Small inner glow */
+    0 0 5px #FF99FF,  /* Larger outer glow */
+    0 0 10px #FF66FF,  /* Even larger glow */
+    0 0 12.5px #FF33CC,  /* Farther glow for depth */
+    0 0 15px #FF00AA;  /* Farthest glow for intensity */
   cursor: pointer;
-  background: linear-gradient(45deg, #FFD700, #FFC107, #FFB300); /* Gold gradient */
-  color: #2B2B2B;
+  color: #FFF;
   font-weight: bold;
   transition: all 0.3s ease;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  background-color: transparent;
+  box-shadow: none;
 }
 
-button:hover {
-  background-color: #FFD700;
-  color: #2B2B2B;
-  transform: scale(1.05);
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.4);
+#submit-name-button:hover {
+  transform: scale(1.2);
+  text-shadow: 
+    0 0 4px #FF99FF,   /* Small inner glow */
+    0 0 10px #FF99FF,  /* Larger outer glow */
+    0 0 15px #FF66FF,  /* Even larger glow */
+    0 0 20px #FF33CC,  /* Farther glow for depth */
+    0 0 25px #FF00AA;  /* Farthest glow for intensity */
 }

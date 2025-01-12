@@ -37,15 +37,16 @@ const WelcomePage: React.FC = () => {
 
   return (
     <div className="container">
-      <h1 className="title">Welcome to Hitster!</h1>
+      <h1 className="title">WELCOME TO HITSTER</h1>
       <div className="form">
         <input
           type="text"
+          id="name-input"
           placeholder="Enter your name"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
         />
-        <button onClick={createPlayer}>Enter</button>
+        <button id="submit-name-button" onClick={createPlayer}>PLAY</button>
       </div>
     </div>
   );
