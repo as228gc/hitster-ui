@@ -21,6 +21,7 @@ const WelcomePage: React.FC = () => {
       apiClient
         .post("/lobby/players/add", { name: playerName })
         .then((response) => {
+          console.log("Player created:", response.data);
           const newPlayer = { id: response.data.id, name: response.data.name };
           setPlayer(newPlayer); // Update context and localStorage
           navigate("/lobby");

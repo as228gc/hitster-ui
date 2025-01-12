@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../../config/axiosConfig";
 
 export const GameLobby: React.FC = () => {
   const [teamName, setTeamName] = useState("");
-  const { clearPlayer } = usePlayer();
+  const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate()
 
 
@@ -17,9 +18,18 @@ export const GameLobby: React.FC = () => {
     setTeamName(""); // Clear input after adding
   };
 
-  const handleLeave = () => {
-    clearPlayer()
-    navigate('/')
+  const handleLeave = async () => {
+    try {
+      await apiClient.post("/lobby/players/remove", {
+        id: player?.id
+      }).then(() => {
+        console.log("Player removed from lobby")
+      })
+      clearPlayer()
+      navigate('/')
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
