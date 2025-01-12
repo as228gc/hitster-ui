@@ -14,8 +14,8 @@ export const GameLobby: React.FC = () => {
   };
 
   const handleAddTeam = async () => {
-    await fetch(`/api/game/add-team?teamName=${teamName}`, { method: "POST" });
     setTeamName(""); // Clear input after adding
+    navigate('/lobby/create-team')
   };
 
   const handleLeave = async () => {
