@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../../config/axiosConfig";
 import "./GameLobby.css";
 import TeamMembers from "./TeamMembers/TeamMembers";
+import { TeamSlot } from "./TeamSlot/TeamSlot";
 
 interface Player {
   id: number;
@@ -22,6 +23,7 @@ export const GameLobby: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate();
+  // create a fixed array of 8 teams
 
   useEffect(() => {
     if (!player) {
@@ -66,12 +68,28 @@ export const GameLobby: React.FC = () => {
   };
 
   return (
-    <div className="game-lobby-container">
-      <h1>Game Lobby</h1>
-      <button onClick={handleStartGame}>Start Game</button>
-      <button onClick={handleAddTeam}>Add Team</button>
-      <button onClick={handleLeave}>Leave lobby</button>
-      <TeamMembers teams={teams} />
+    <div className="lobby-container">
+      <div className="game-lobby-container">
+        <div className="teams-container">
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <TeamSlot></TeamSlot>
+          <button onClick={handleLeave}>Leave lobby</button>
+        </div>
+        <div className="action-container">
+          <h1>Game Lobby</h1>
+          <button onClick={handleStartGame}>Start Game</button>
+          <button onClick={handleAddTeam}>Add Team</button>
+          
+          <button></button>
+        </div>
+        {/* <TeamMembers teams={teams} /> */}
+      </div>
     </div>
   );
 };

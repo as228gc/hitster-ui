@@ -1,14 +1,19 @@
+.lobby-container {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
 /* Center the lobby container */
 .game-lobby-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  width: 80vw;
+  justify-content: space-between;
+  
   font-family: Arial, sans-serif;
   color: #ffd700; /* Gold text */
-  background: linear-gradient(135deg, #2b2b2b, #1e1e1e); /* Dark gray gradient */
 }
 
 /* Page Title */
@@ -26,12 +31,13 @@
   margin: 20px 0;
 }
 
-.team-container {
-  margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ffd700; /* Gold border */
+.teams-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   border-radius: 8px;
-  background: #333; /* Dark gray background */
+  gap: 10px;
+  background: transparent; /* Dark gray background */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
 }
 
@@ -90,3 +96,10 @@ button:hover {
 button:active {
   transform: translateY(0);
 }
+
+.action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
