@@ -13,14 +13,13 @@ export const GameLobby: React.FC = () => {
 
   useEffect(() => {
     if (!player) {
-      clearPlayer()
       navigate('/')
     }
 
     const fetchTeams = async () => {
       try {
         const response = await apiClient.get("/lobby/teams");
-        console.log("Teams:", response.data);
+        console.log("Teams from backend:", response.data);
         setTeams(response.data);
       } catch (e) {
         console.error(e);
@@ -70,9 +69,13 @@ export const GameLobby: React.FC = () => {
               <h2>{team.name}</h2>
               <p>Leader: {team.leader ? team.leader.name : "No leader assigned"}</p>
               <ul>
-                {team.players.map((member) => (
-                  <li key={member.id}>{member.name}</li>
-                ))}
+                {team.players && team.players.length > 0 ? (
+                  team.players.map((player) => (
+                    <li key={player.id}>{player.name}</li>
+                  ))
+                ) : (
+                  <li>No players in this team</li>
+                )}
               </ul>
             </div>
           ))}

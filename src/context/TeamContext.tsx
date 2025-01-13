@@ -1,23 +1,40 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { Team } from "../datatypes/Team";
 
 interface TeamContextProps {
-  isConfigured: boolean;
-  setIsConfigured: (configured: boolean) => void;
+  teams: Team[]; // Store the list of teams
+  setTeams: (teams: Team[]) => void;
+  addTeam: (team: Team) => void;
+  clearTeams: () => void;
 }
 
 const TeamContext = createContext<TeamContextProps | undefined>(undefined);
 
 export const TeamProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isConfigured, setIsConfigured] = useState(false); // Global state
+  const [teams, setTeams] = useState<Team[]>([]); // Track the list of teams
+
+  const addTeam = (team: Team) => {
+    setTeams((prevTeams) => [...prevTeams, team]);
+  };
+
+  const clearTeams = () => {
+    setTeams([]); // Clear the teams
+  };
 
   return (
-    <TeamContext.Provider value={{ isConfigured, setIsConfigured }}>
+    <TeamContext.Provider
+      value={{
+        teams,
+        setTeams,
+        addTeam,
+        clearTeams,
+      }}
+    >
       {children}
     </TeamContext.Provider>
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTeamContext = (): TeamContextProps => {
   const context = useContext(TeamContext);
   if (!context) {

@@ -9,12 +9,19 @@ export const CreateTeamForm: React.FC = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Creating team:", teamName)
+    console.log("Player:", player?.id)
     // Add logic to create a team
-    apiClient.post("/lobby/teams/add-team", { teamName: teamName, teamLeader: player}).then((response) => {
+    apiClient.post("/lobby/teams/add", {
+      teamName: teamName,
+      leaderId: player?.id?.toString(), // Ensure leaderId is a string
+    })
+    .then((response) => {
       console.log("Team created:", response.data);
-    }).catch((error) => {
-      console.error("Error creating team:", error);
-    });
+    })
+    .catch((error) => {
+      console.error("Error creating team:", error.response?.data || error.message);
+    });    
   }
   
   return (
