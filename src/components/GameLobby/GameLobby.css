@@ -1,0 +1,92 @@
+/* Center the lobby container */
+.game-lobby-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+  color: #ffd700; /* Gold text */
+  background: linear-gradient(135deg, #2b2b2b, #1e1e1e); /* Dark gray gradient */
+}
+
+/* Page Title */
+.game-lobby-container h1 {
+  color: #ffd700; /* Gold */
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 5px #000;
+}
+
+/* Teams List */
+.teams-list {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px 0;
+}
+
+.team-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ffd700; /* Gold border */
+  border-radius: 8px;
+  background: #333; /* Dark gray background */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.team-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffd700; /* Gold */
+}
+
+.team-members ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.team-members li {
+  padding: 8px;
+  margin: 4px 0;
+  background: #444; /* Slightly lighter gray */
+  border-radius: 4px;
+  color: #ffd700; /* Gold text */
+}
+
+/* Input Field */
+input[type="text"] {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ffd700;
+  border-radius: 5px;
+  background: #2b2b2b;
+  color: #ffd700;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 5px;
+  color: #2b2b2b; /* Dark gray text */
+  background-color: #ffd700; /* Gold background */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #e6c200; /* Slightly darker gold */
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}

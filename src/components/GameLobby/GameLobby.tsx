@@ -1,12 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../config/axiosConfig";
+import "./GameLobby.css";
+
+interface Team {
+  id: string
+  name: string
+  leader: Player
+  members: Player[]
+}
+
+interface Player {
+  id: string;
+  name: string;
+}
 
 export const GameLobby: React.FC = () => {
-  const [teamName, setTeamName] = useState("");
+  const [teams, setTeams] = useState<Team[]>([]);
   const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!player) {
+      navigate('/')
+    }
+
+    const fetchTeams = async () => {
+      try {
+        const response = await apiClient.get("/lobby/teams");
+        console.log("Teams:", response.data);
+        setTeams(response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchTeams();
+  }, [player, navigate])
 
 
   const handleStartGame = async () => {
@@ -14,7 +45,6 @@ export const GameLobby: React.FC = () => {
   };
 
   const handleAddTeam = async () => {
-    setTeamName(""); // Clear input after adding
     navigate('/lobby/create-team')
   };
 
@@ -33,15 +63,9 @@ export const GameLobby: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="game-lobby-container">
       <h1>Game Lobby</h1>
       <button onClick={handleStartGame}>Start Game</button>
-      <input
-        type="text"
-        value={teamName}
-        onChange={(e) => setTeamName(e.target.value)}
-        placeholder="Enter team name"
-      />
       <button onClick={handleAddTeam}>Add Team</button>
       <button onClick={handleLeave}>Leave lobby</button>
     </div>

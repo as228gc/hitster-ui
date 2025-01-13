@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Square+Peg&display=swap');
 
 .container {
   display: flex;
@@ -11,29 +9,53 @@
   height: 100vh;
   width: 100vw;
   background: linear-gradient(180deg, #0D0D0D, #031321); /* Turquoise gradient */
-  color: #FFF; /* Gold text */
+  color: #FFF; /* White text */
   text-align: center;
+  overflow: hidden; /* Prevent overflow during animations */
+}
+
+.title-container {
+  position: relative; /* To position "welcome to" relative to "HITSTER" */
+  display: inline-block; /* Ensure the titles are treated as a unit */
 }
 
 .title {
-  font-size: 3rem;
-  margin-bottom: 20px;
+  position: absolute; /* Position relative to its container */
+  top: -20px; /* Adjust vertical position */
+  left: -30px; /* Adjust horizontal position */
+  transform: rotate(-10deg); /* Slight tilt */
+  font-size: 2rem; /* Smaller size for "welcome to" */
+  color: #FFF;
+  text-shadow: 
+    0 0 4px #FFF,   
+    0 0 10px #FFF,  
+    0 0 15px #FFF,  
+    0 0 20px #FFF,  
+    0 0 25px #FFF;  
+  font-family: 'Square Peg', serif;
+  margin: 0;
+  padding: 0;
+}
+
+#hitster-tag {
+  font-size: 6rem;
   color: #FFF; /* Text color */
   text-shadow: 
-    0 0 4px #FF99FF,   /* Small inner glow */
-    0 0 10px #FF99FF,  /* Larger outer glow */
-    0 0 15px #FF66FF,  /* Even larger glow */
-    0 0 20px #FF33CC,  /* Farther glow for depth */
-    0 0 25px #FF00AA;  /* Farthest glow for intensity */
+    0 0 4px #FF99FF,   
+    0 0 10px #FF99FF,  
+    0 0 15px #FF66FF,  
+    0 0 20px #FF33CC,  
+    0 0 25px #FF00AA;  
   font-family: 'Tilt Neon', serif;
   text-align: center;
-  margin-bottom: 3rem;
+  margin: 0;
 }
 
 
 .form {
   display: flex;
   flex-direction: column;
+  align-items: center; 
   gap: 10px;
   width: 300px;
 }
@@ -50,8 +72,7 @@
   border: 2px solid #FFF; /* White border */
   color: #FFF; /* White text */
   background: transparent; /* Transparent background */
-  outline: none; /* Removes the yellow focus outline */
-  background-color: transparent;
+  outline: none;
   box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF; /* Neon stroke */
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
@@ -61,35 +82,91 @@
   box-shadow: 0 0 12px #33FFFF, 0 0 24px #33FFFF; /* Stronger glow on focus */
 }
 
-
 #name-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
+/* Play button styles */
 #submit-name-button {
   font-size: 1.4rem;
   width: fit-content;
   margin: auto;
   text-shadow: 
-    0 0 4px #FF99FF,   /* Small inner glow */
-    0 0 5px #FF99FF,  /* Larger outer glow */
-    0 0 10px #FF66FF,  /* Even larger glow */
-    0 0 12.5px #FF33CC,  /* Farther glow for depth */
-    0 0 15px #FF00AA;  /* Farthest glow for intensity */
+    0 0 4px #FF99FF,   
+    0 0 5px #FF99FF,  
+    0 0 10px #FF66FF,  
+    0 0 12.5px #FF33CC,  
+    0 0 15px #FF00AA;  
   cursor: pointer;
   color: #FFF;
   font-weight: bold;
   transition: all 0.3s ease;
   background-color: transparent;
   box-shadow: none;
+  letter-spacing: 0.3rem;
+  border: 2px solid transparent;
 }
 
 #submit-name-button:hover {
   transform: scale(1.2);
   text-shadow: 
-    0 0 4px #FF99FF,   /* Small inner glow */
-    0 0 10px #FF99FF,  /* Larger outer glow */
-    0 0 15px #FF66FF,  /* Even larger glow */
-    0 0 20px #FF33CC,  /* Farther glow for depth */
-    0 0 25px #FF00AA;  /* Farthest glow for intensity */
+    0 0 4px #FFD018,   
+    0 0 10px #FFC818,  
+    0 0 15px #FFC618,  
+    0 0 20px #FFC418,  
+    0 0 25px #FFC218;  
+}
+
+/* Dimension entry animation */
+#submit-name-button.animate {
+  animation: zoomIntoDimension 1.5s ease forwards; /* Trigger the animation */
+}
+
+@keyframes zoomIntoDimension {
+  0% {
+    transform: scale(1); /* Initial size */
+    opacity: 1; /* Fully visible */
+  }
+  50% {
+    transform: scale(20); /* Expanding */
+    opacity: 0.5; /* Semi-transparent */
+  }
+  100% {
+    transform: scale(100); /* Fully fills the screen */
+    opacity: 0; /* Fully invisible */
+  }
+}
+
+.name-tag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute; /* Positioned at the bottom */
+  bottom: 3%;
+  width: 100%;
+}
+
+#leading-line, #trailing-line {
+  height: 2px;
+  background-color: #FFF;
+  box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF;
+}
+
+#leading-line {
+  flex: 0 0 80%;
+}
+
+#trailing-line {
+  flex: 1;
+}
+
+.name-tag p {
+  flex: 0;
+  margin: 0;
+  padding: 0 10px;
+  color: #99FFFF; /* Neon text color */
+  font-size: 1.5rem;
+  font-family: 'Square Peg', sans-serif;
+  white-space: nowrap;
+  text-shadow: 0 0 8px #99FFFF, 0 0 16px #99FFFF;
 }
