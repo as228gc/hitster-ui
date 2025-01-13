@@ -5,6 +5,11 @@ import apiClient from "../../config/axiosConfig";
 import bassSound from "../../assets/sounds/bass-impact.mp3";
 import "./WelcomePage.css";
 
+interface Player {
+  id: number;
+  name: string;
+}
+
 const WelcomePage: React.FC = () => {
   const { player, setPlayer } = usePlayer();
   const navigate = useNavigate();
@@ -37,7 +42,7 @@ const WelcomePage: React.FC = () => {
           .post("/lobby/players/add", { name: playerName })
           .then((response) => {
             console.log("Player created:", response.data);
-            const newPlayer = { id: response.data.id, name: response.data.name };
+            const newPlayer: Player = { id: response.data.id, name: response.data.name };
             setPlayer(newPlayer);
             navigate("/lobby"); // Navigate after animation ends
           })

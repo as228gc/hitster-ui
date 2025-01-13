@@ -1,9 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-
-interface Player {
-  id: string;
-  name: string;
-}
+import { Player } from "../datatypes/Player";
 
 interface PlayerContextProps {
   player: Player | null;

@@ -2,19 +2,9 @@ import React, { useEffect, useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../config/axiosConfig";
+import { Player } from "../../datatypes/Player";
+import { Team } from "../../datatypes/Team";
 import "./GameLobby.css";
-
-interface Team {
-  id: string
-  name: string
-  leader: Player
-  members: Player[]
-}
-
-interface Player {
-  id: string;
-  name: string;
-}
 
 export const GameLobby: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -23,6 +13,7 @@ export const GameLobby: React.FC = () => {
 
   useEffect(() => {
     if (!player) {
+      clearPlayer()
       navigate('/')
     }
 
@@ -37,6 +28,7 @@ export const GameLobby: React.FC = () => {
     };
 
     fetchTeams();
+    console.log("Teams:", teams)
   }, [player, navigate])
 
 
@@ -63,11 +55,33 @@ export const GameLobby: React.FC = () => {
   }
 
   return (
-    <div className="game-lobby-container">
-      <h1>Game Lobby</h1>
-      <button onClick={handleStartGame}>Start Game</button>
-      <button onClick={handleAddTeam}>Add Team</button>
-      <button onClick={handleLeave}>Leave lobby</button>
-    </div>
+    <>
+      <div className="game-lobby-container">
+        <h1>Game Lobby</h1>
+        <button onClick={handleStartGame}>Start Game</button>
+        <button onClick={handleAddTeam}>Add Team</button>
+        <button onClick={handleLeave}>Leave lobby</button>
+      </div>
+      {teams.length === 0 && <p>No teams available</p>}
+      {teams.length > 0 ?
+        <div className="teams-container">
+          {teams.map((team) => (
+            <div key={team.id} className="team">
+              <h2>{team.name}</h2>
+              <p>Leader: {team.leader ? team.leader.name : "No leader assigned"}</p>
+              <ul>
+                {team.players.map((member) => (
+                  <li key={member.id}>{member.name}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        :
+        <p>No teams available</p>
+      }
+
+
+    </>
   );
 };

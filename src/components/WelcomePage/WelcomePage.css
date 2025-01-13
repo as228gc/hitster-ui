@@ -102,6 +102,7 @@
 }
 
 #submit-name-button {
+  will-change: transform, opacity; /* Tell the browser to optimize for these changes */
   font-size: 1.4rem;
   width: fit-content;
   margin: auto;
@@ -119,8 +120,10 @@
   box-shadow: none;
   letter-spacing: 0.3rem;
   border: 2px solid transparent;
-  z-index: 3; /* Above the overlay */
+  z-index: 3;
+  outline: none; /* Disable the default outline */
 }
+
 
 #submit-name-button.animate {
   animation: zoomIntoDimension 1.5s ease forwards;
