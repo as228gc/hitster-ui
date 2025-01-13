@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "../../context/PlayerContext";
 import apiClient from "../../config/axiosConfig";
+import bassSound from "../../assets/sounds/bass-impact.mp3";
 import "./WelcomePage.css";
 
 const WelcomePage: React.FC = () => {
@@ -17,10 +18,19 @@ const WelcomePage: React.FC = () => {
     }
   }, [player, navigate]);
 
+  // Play click sound
+  const playClickSound = () => {
+    const audio = new Audio(bassSound);
+    audio.play();
+  };
+
   const createPlayer = () => {
     if (playerName.trim()) {
       setIsAnimating(true); // Start the animation
-      document.querySelector(".container")?.classList.add("blur"); // Add blur effect
+      playClickSound(); // Play the sound
+
+      // Add the dark overlay effect
+      document.querySelector(".overlay")?.classList.add("dark");
 
       setTimeout(() => {
         apiClient
@@ -28,7 +38,7 @@ const WelcomePage: React.FC = () => {
           .then((response) => {
             console.log("Player created:", response.data);
             const newPlayer = { id: response.data.id, name: response.data.name };
-            setPlayer(newPlayer); // Update context and localStorage
+            setPlayer(newPlayer);
             navigate("/lobby"); // Navigate after animation ends
           })
           .catch((error) => {
@@ -43,6 +53,7 @@ const WelcomePage: React.FC = () => {
 
   return (
     <div className="container">
+      <div className="overlay"></div> {/* Dark overlay */}
       <div className="title-container">
         <h1 className="title">welcome to</h1>
         <h1 id="hitster-tag">HITSTER</h1>
