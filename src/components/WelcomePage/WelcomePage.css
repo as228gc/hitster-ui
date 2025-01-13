@@ -9,29 +9,37 @@
   height: 100vh;
   width: 100vw;
   background: linear-gradient(180deg, #0D0D0D, #031321); /* Turquoise gradient */
-  color: #FFF; /* White text */
+  color: #FFF;
   text-align: center;
-  overflow: hidden; /* Prevent overflow during animations */
+  overflow: hidden;
+  position: relative;
+  transition: filter 1.5s ease; /* Smooth blur transition */
+}
+
+.container.blur {
+  filter: blur(8px); /* Apply the blur effect */
 }
 
 .title-container {
-  position: relative; /* To position "welcome to" relative to "HITSTER" */
-  display: inline-block; /* Ensure the titles are treated as a unit */
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+  z-index: 2;
 }
 
 .title {
-  position: absolute; /* Position relative to its container */
-  top: -20px; /* Adjust vertical position */
-  left: -30px; /* Adjust horizontal position */
-  transform: rotate(-10deg); /* Slight tilt */
-  font-size: 2rem; /* Smaller size for "welcome to" */
+  position: absolute;
+  top: -20px;
+  left: -30px;
+  transform: rotate(-10deg);
+  font-size: 2rem;
   color: #FFF;
   text-shadow: 
     0 0 4px #FFF,   
     0 0 10px #FFF,  
     0 0 15px #FFF,  
     0 0 20px #FFF,  
-    0 0 25px #FFF;  
+    0 0 25px #FFF;
   font-family: 'Square Peg', serif;
   margin: 0;
   padding: 0;
@@ -39,18 +47,17 @@
 
 #hitster-tag {
   font-size: 6rem;
-  color: #FFF; /* Text color */
+  color: #FFF;
   text-shadow: 
     0 0 4px #FF99FF,   
     0 0 10px #FF99FF,  
     0 0 15px #FF66FF,  
     0 0 20px #FF33CC,  
-    0 0 25px #FF00AA;  
+    0 0 25px #FF00AA;
   font-family: 'Tilt Neon', serif;
   text-align: center;
   margin: 0;
 }
-
 
 .form {
   display: flex;
@@ -58,35 +65,30 @@
   align-items: center; 
   gap: 10px;
   width: 300px;
-}
-
-.actions {
-  display: flex;
-  gap: 20px;
+  z-index: 2;
 }
 
 #name-input {
   padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
-  border: 2px solid #FFF; /* White border */
-  color: #FFF; /* White text */
-  background: transparent; /* Transparent background */
+  border: 2px solid #FFF;
+  color: #FFF;
+  background: transparent;
   outline: none;
-  box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF; /* Neon stroke */
+  box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 #name-input:focus {
-  border-color: #33FFFF; /* Change border to match stroke on focus */
-  box-shadow: 0 0 12px #33FFFF, 0 0 24px #33FFFF; /* Stronger glow on focus */
+  border-color: #33FFFF;
+  box-shadow: 0 0 12px #33FFFF, 0 0 24px #33FFFF;
 }
 
 #name-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Play button styles */
 #submit-name-button {
   font-size: 1.4rem;
   width: fit-content;
@@ -96,7 +98,7 @@
     0 0 5px #FF99FF,  
     0 0 10px #FF66FF,  
     0 0 12.5px #FF33CC,  
-    0 0 15px #FF00AA;  
+    0 0 15px #FF00AA;
   cursor: pointer;
   color: #FFF;
   font-weight: bold;
@@ -105,6 +107,7 @@
   box-shadow: none;
   letter-spacing: 0.3rem;
   border: 2px solid transparent;
+  z-index: 3;
 }
 
 #submit-name-button:hover {
@@ -114,26 +117,25 @@
     0 0 10px #FFC818,  
     0 0 15px #FFC618,  
     0 0 20px #FFC418,  
-    0 0 25px #FFC218;  
+    0 0 25px #FFC218;
 }
 
-/* Dimension entry animation */
 #submit-name-button.animate {
-  animation: zoomIntoDimension 1.5s ease forwards; /* Trigger the animation */
+  animation: zoomIntoDimension 1.5s ease forwards;
 }
 
 @keyframes zoomIntoDimension {
   0% {
-    transform: scale(1); /* Initial size */
-    opacity: 1; /* Fully visible */
+    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    transform: scale(20); /* Expanding */
-    opacity: 0.5; /* Semi-transparent */
+    transform: scale(20);
+    opacity: 0.5;
   }
   100% {
-    transform: scale(100); /* Fully fills the screen */
-    opacity: 0; /* Fully invisible */
+    transform: scale(100);
+    opacity: 0;
   }
 }
 
@@ -141,12 +143,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: absolute; /* Positioned at the bottom */
+  position: absolute;
   bottom: 3%;
   width: 100%;
+  z-index: 2;
 }
 
-#leading-line, #trailing-line {
+#leading-line,
+#trailing-line {
   height: 2px;
   background-color: #FFF;
   box-shadow: 0 0 8px #33FFFF, 0 0 16px #33FFFF;
@@ -164,7 +168,7 @@
   flex: 0;
   margin: 0;
   padding: 0 10px;
-  color: #99FFFF; /* Neon text color */
+  color: #99FFFF;
   font-size: 1.5rem;
   font-family: 'Square Peg', sans-serif;
   white-space: nowrap;

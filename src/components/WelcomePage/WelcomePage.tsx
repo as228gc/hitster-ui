@@ -8,7 +8,7 @@ const WelcomePage: React.FC = () => {
   const { player, setPlayer } = usePlayer();
   const navigate = useNavigate();
   const [playerName, setPlayerName] = useState("");
-  const [isAnimating, setIsAnimating] = useState(false); // To control the animation state
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Redirect if a player already exists
   useEffect(() => {
@@ -20,6 +20,8 @@ const WelcomePage: React.FC = () => {
   const createPlayer = () => {
     if (playerName.trim()) {
       setIsAnimating(true); // Start the animation
+      document.querySelector(".container")?.classList.add("blur"); // Add blur effect
+
       setTimeout(() => {
         apiClient
           .post("/lobby/players/add", { name: playerName })
