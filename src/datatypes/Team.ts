@@ -5,6 +5,6 @@ export interface Team {
   id: number;
   name: string;
   players: Player[];
-  teamleader: Player;
+  teamleader: Player | null;
   timeline: typeof SongCard[];
 }
