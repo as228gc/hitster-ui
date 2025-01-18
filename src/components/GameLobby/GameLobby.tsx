@@ -33,11 +33,10 @@ export const GameLobby: React.FC = () => {
     });
 
     // Handle real-time updates for teams
-    socket.on("team-updated", (updatedTeam: Team) => {
-      console.log("Team updated via WebSocket:", updatedTeam);
-      setTeams((prevTeams) =>
-        prevTeams.map((team) => (team.id === updatedTeam.id ? updatedTeam : team))
-      );
+    socket.on("team-updated", (updatedTeams: Team[]) => {
+      console.log("Team updated via WebSocket:", updatedTeams);
+      setTeams(updatedTeams);
+      console.log("Teams after update:", teams);
     });
 
     // Fetch initial teams

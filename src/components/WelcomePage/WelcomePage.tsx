@@ -49,6 +49,7 @@ const WelcomePage: React.FC = () => {
           .catch((error) => {
             alert("Error creating player. Please try again.");
             console.error(error);
+            navigate("/"); // Navigate back to the welcome page
           });
       }, 1500); // Match the duration of the animation
     } else {
