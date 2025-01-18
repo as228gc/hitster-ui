@@ -5,25 +5,25 @@ import "./TeamSlot.css";
 
 interface TeamSlotProps {
   team: Team;
-  onUpdate: (updatedTeam: Team) => void; // Callback to update the parent state
+  onUpdateTeams: (updatedTeams: Team[]) => void; // Callback to update all teams
 }
 
-export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdate }) => {
+export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdateTeams }) => {
   const { player } = usePlayer();
 
   const handleJoin = async () => {
     try {
       console.log(`Joining team: ${team.id} with player: ${player?.id}`);
 
-      // Post request to add player to the team
+      // Add player to the team
       await apiClient.post(`/lobby/teams/${team.id}/add-player`, { playerId: player?.id });
 
-      // Fetch updated team data
-      const response = await apiClient.get<Team>(`/lobby/teams/${team.id}`);
-      console.log("Updated team:", response.data);
+      // Fetch the latest state of all teams
+      const response = await apiClient.get<Team[]>("/lobby/teams");
+      console.log("Updated teams data:", response.data);
 
-      // Notify parent component of the update
-      onUpdate(response.data);
+      // Notify parent component to update all teams
+      onUpdateTeams(response.data);
     } catch (error) {
       console.error("Error joining team:", error);
     }
@@ -34,20 +34,14 @@ export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdate }) => {
       className={`team-slot ${team.players.length ? "filled-team" : "empty-team"}`}
       onClick={handleJoin}
     >
-      {team.players.length ? (
-        <>
-          <h2>{team.name}</h2>
-          <ul>
-            {team.players.map((player) =>
-              team.teamleader?.id === player.id ? null : (
-                <li key={player.id}>{player.name}</li>
-              )
-            )}
-          </ul>
-        </>
-      ) : (
-        <p>Empty</p>
-      )}
+      <h2>{team.name}</h2>
+      <ul>
+        {team.players.map((player) =>
+          team.teamleader?.id === player.id ? null : (
+            <li key={player.id}>{player.name}</li>
+          )
+        )}
+      </ul>
     </div>
   );
 };

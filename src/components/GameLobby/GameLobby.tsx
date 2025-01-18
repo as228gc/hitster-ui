@@ -4,11 +4,8 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../../config/axiosConfig";
 import "./GameLobby.css";
 import { TeamSlot } from "./TeamSlot/TeamSlot";
-
-interface Player {
-  id: number;
-  name: string;
-}
+import { initializeSocket } from "../../config/socketConfig";
+import { Player } from "../../datatypes/Player";
 
 interface Team {
   id: number;
@@ -28,10 +25,26 @@ export const GameLobby: React.FC = () => {
       navigate("/");
     }
 
+    // Initialize WebSocket connection
+    const socket = initializeSocket();
+
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server");
+    });
+
+    // Handle real-time updates for teams
+    socket.on("team-updated", (updatedTeam: Team) => {
+      console.log("Team updated via WebSocket:", updatedTeam);
+      setTeams((prevTeams) =>
+        prevTeams.map((team) => (team.id === updatedTeam.id ? updatedTeam : team))
+      );
+    });
+
+    // Fetch initial teams
     const fetchTeams = async () => {
       try {
         const response = await apiClient.get("/lobby/teams");
-        console.log("Teams from backend:", response.data);
+        console.log("Initial teams from backend:", response.data);
         setTeams(response.data);
       } catch (error) {
         console.error("Error fetching teams:", error);
@@ -39,14 +52,15 @@ export const GameLobby: React.FC = () => {
     };
 
     fetchTeams();
+
+    // Cleanup WebSocket connection on component unmount
+    return () => {
+      socket.disconnect();
+    };
   }, [player, navigate]);
 
-  const updateTeam = (updatedTeam: Team) => {
-    setTeams((prevTeams) =>
-      prevTeams.map((team) =>
-        team.id === updatedTeam.id ? updatedTeam : team
-      )
-    );
+  const handleUpdateTeams = (updatedTeams: Team[]) => {
+    setTeams(updatedTeams); // Update all teams with the latest state
   };
 
   const handleStartGame = async () => {
@@ -60,7 +74,8 @@ export const GameLobby: React.FC = () => {
 
   const handleLeave = async () => {
     try {
-      await apiClient.post("/lobby/players/remove", { id: player?.id });
+      console.log(player?.id)
+      await apiClient.post("/lobby/players/remove", player );
       console.log("Player removed from lobby");
       clearPlayer();
       navigate("/");
@@ -85,7 +100,7 @@ export const GameLobby: React.FC = () => {
                 <p>No teams available</p>
               ) : (
                 teams.map((team) => (
-                  <TeamSlot key={team.id} team={team} onUpdate={updateTeam} />
+                  <TeamSlot key={team.id} team={team} onUpdateTeams={handleUpdateTeams} />
                 ))
               )}
             </div>
