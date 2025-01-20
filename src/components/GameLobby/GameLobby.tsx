@@ -62,8 +62,8 @@ export const GameLobby: React.FC = () => {
     // Cleanup WebSocket connection on component unmount
     return () => {
       socket.emit("leave-lobby", {
-        playerId: player?.id,
-        playerName: player?.name,
+        id: player?.id,
+        name: player?.name,
       }, (ack: string) => {
         console.log(ack);
       });
