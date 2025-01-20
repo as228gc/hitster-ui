@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../config/axiosConfig";
 import "./GameLobby.css";
 import { TeamSlot } from "./TeamSlot/TeamSlot";
-import { initializeSocket } from "../../config/socketConfig";
+import { disconnectSocket, initializeSocket, getSocket } from "../../config/socketConfig";
 import { Player } from "../../datatypes/Player";
+import apiClient from "../../config/axiosConfig";
 
 interface Team {
   id: number;
   name: string;
-  timeline: null | any; // Replace `any` with the correct type if needed
+  timeline: null | any;
   players: Player[];
   teamleader: Player | null;
 }
@@ -23,64 +23,59 @@ export const GameLobby: React.FC = () => {
   useEffect(() => {
     if (!player) {
       navigate("/");
+      return;
     }
+
+    // Fetch initial teams from REST API
+    const fetchTeams = async () => {
+      try {
+        const response = await apiClient.get("/lobby/teams"); // Adjust the endpoint if needed
+        console.log("Initial teams fetched:", response.data);
+        setTeams(response.data);
+      } catch (error) {
+        console.error("Error fetching initial teams:", error);
+      }
+    };
+
+    fetchTeams();
 
     // Initialize WebSocket connection
     const socket = initializeSocket();
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket server");
+      // Notify server of the player joining the lobby
+      socket.emit("join-lobby", player, (ack: string) => {
+        console.log(ack);
+      });
     });
 
     // Handle real-time updates for teams
     socket.on("team-updated", (updatedTeams: Team[]) => {
       console.log("Team updated via WebSocket:", updatedTeams);
       setTeams(updatedTeams);
-      console.log("Teams after update:", teams);
     });
 
-    // Fetch initial teams
-    const fetchTeams = async () => {
-      try {
-        const response = await apiClient.get("/lobby/teams");
-        console.log("Initial teams from backend:", response.data);
-        setTeams(response.data);
-      } catch (error) {
-        console.error("Error fetching teams:", error);
-      }
-    };
-
-    fetchTeams();
+    socket.on("lobby-updated", (updatedTeams: Team[]) => {
+      console.log("Lobby updated via WebSocket:", updatedTeams);
+      setTeams(updatedTeams);
+    });
 
     // Cleanup WebSocket connection on component unmount
     return () => {
-      socket.disconnect();
+      socket.emit("leave-lobby", player?.id, (ack: string) => {
+        console.log(ack);
+      });
+      disconnectSocket();
     };
   }, [player, navigate]);
 
-  const handleUpdateTeams = (updatedTeams: Team[]) => {
-    setTeams(updatedTeams); // Update all teams with the latest state
-  };
-
-  const handleStartGame = async () => {
-    try {
-      await apiClient.post("/api/game/start");
-      console.log("Game started");
-    } catch (error) {
-      console.error("Error starting game:", error);
-    }
-  };
-
-  const handleLeave = async () => {
-    try {
-      console.log(player?.id)
-      await apiClient.post("/lobby/players/remove", player );
-      console.log("Player removed from lobby");
+  const handleLeave = () => {
+    getSocket().emit("leave-lobby", player?.id, (ack: string) => {
+      console.log(ack);
       clearPlayer();
       navigate("/");
-    } catch (error) {
-      console.error("Error leaving lobby:", error);
-    }
+    });
   };
 
   return (
@@ -98,18 +93,13 @@ export const GameLobby: React.FC = () => {
               {teams.length === 0 ? (
                 <p>No teams available</p>
               ) : (
-                teams.map((team) => (
-                  <TeamSlot key={team.id} team={team} onUpdateTeams={handleUpdateTeams} />
-                ))
+                teams.map((team) => <TeamSlot key={team.id} team={team} />)
               )}
             </div>
           </div>
           <div className="action-container">
             <h1 id="hitster-tag">HITSTER</h1>
             <h1>Game Lobby</h1>
-            <button className="start-game-button" onClick={handleStartGame}>
-              Start Game
-            </button>
           </div>
         </div>
       </div>

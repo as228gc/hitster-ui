@@ -1,32 +1,27 @@
-import apiClient from "../../../config/axiosConfig";
+import { getSocket } from "../../../config/socketConfig";
 import { usePlayer } from "../../../context/PlayerContext";
 import { Team } from "../../../datatypes/Team";
 import "./TeamSlot.css";
 
 interface TeamSlotProps {
   team: Team;
-  onUpdateTeams: (updatedTeams: Team[]) => void; // Callback to update all teams
 }
 
-export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdateTeams }) => {
+export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
   const { player } = usePlayer();
 
-  const handleJoin = async () => {
-    try {
-      console.log(`Joining team: ${team.id} with player: ${player?.id}`);
-
-      // Add player to the team
-      await apiClient.post(`/lobby/teams/${team.id}/add-player`, { playerId: player?.id });
-
-      // Fetch the latest state of all teams
-      const response = await apiClient.get<Team[]>("/lobby/teams");
-      console.log("Updated teams data:", response.data);
-
-      // Notify parent component to update all teams
-      onUpdateTeams(response.data);
-    } catch (error) {
-      console.error("Error joining team:", error);
-    }
+  const handleJoin = () => {
+    console.log(`Joining team: ${team.id} with player: ${player?.id}`);
+    getSocket().emit(
+      "join-team",
+      {
+        playerId: player?.id,
+        teamId: team.id
+      },
+      (ack: string) => {
+        console.log(ack);
+      }
+    );
   };
 
   return (
@@ -37,7 +32,11 @@ export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdateTeams }) => {
       <h2>{team.name}</h2>
       <ul>
         {team.players.map((player) =>
-          team.teamleader?.id === player.id ? null : (
+          team.teamleader?.id === player.id ? (
+            <li key={player.id}>
+              <strong>{player.name}</strong>
+            </li>
+          ) : (
             <li key={player.id}>{player.name}</li>
           )
         )}
