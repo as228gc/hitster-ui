@@ -10,25 +10,38 @@ interface PlayerContextProps {
 const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
 
 export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [player, setPlayerState] = useState<Player | null>(null);
+  const [player, setPlayerState] = useState<Player | null>(() => {
+    const storedPlayer = localStorage.getItem("player");
+    if (storedPlayer) {
+      try {
+        return JSON.parse(storedPlayer);
+      } catch {
+        console.error("Invalid player data in localStorage");
+        localStorage.removeItem("player");
+      }
+    }
+    return null; // Default value
+  });
 
-  // Function to update player state and store it in localStorage
   const setPlayer = (player: Player) => {
     setPlayerState(player);
     localStorage.setItem("player", JSON.stringify(player));
   };
 
-  // Function to clear player data (e.g., on logout)
   const clearPlayer = () => {
     setPlayerState(null);
     localStorage.removeItem("player");
   };
 
-  // Initialize player from localStorage on mount
   useEffect(() => {
     const storedPlayer = localStorage.getItem("player");
     if (storedPlayer) {
-      setPlayerState(JSON.parse(storedPlayer));
+      try {
+        setPlayerState(JSON.parse(storedPlayer));
+      } catch (error) {
+        console.error("Error parsing player data from localStorage:", error);
+        localStorage.removeItem("player");
+      }
     }
   }, []);
 
@@ -39,7 +52,6 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const usePlayer = (): PlayerContextProps => {
   const context = useContext(PlayerContext);
   if (!context) {

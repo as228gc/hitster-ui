@@ -9,10 +9,11 @@ interface TeamSlotProps {
 
 export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
   const { player } = usePlayer();
+  const socket = getSocket();
 
   const handleJoin = () => {
     console.log(`Joining team: ${team.id} with player: ${player?.id}`);
-    getSocket().emit(
+    socket.emit(
       "join-team",
       {
         playerId: player?.id,
