@@ -67,16 +67,19 @@ export const GameLobbyView: React.FC = () => {
   }, [player, navigate]);
 
   const handleLeave = () => {
-    getSocket().emit("leave-lobby", {
-      playerId: player?.id,
-      playerName: player?.name
-    }, (ack: string) => {
-      console.log(ack);
-      console.log("Leaving lobby");
-      clearPlayer();
-      navigate("/");
-    });
+    getSocket().emit("leave-lobby",
+      player,
+      (ack: string) => {
+        console.log(ack);
+        console.log("Leaving lobby");
+        clearPlayer();
+        navigate("/");
+      });
   };
+
+  const handleGameStart = () => {
+    console.log("Starting game");
+  }
 
   return (
     <>
@@ -118,7 +121,7 @@ export const GameLobbyView: React.FC = () => {
           <div className="action-container">
             <h1 id="hitster-tag">HITSTER</h1>
             <h1>Game Lobby</h1>
-            <button>Start</button>
+            <button onClick={handleGameStart}>Start</button>
           </div>
         </div>
       </div>
