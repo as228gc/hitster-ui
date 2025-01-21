@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
-import "./GameLobby.css";
+import "./GameLobbyView.css";
 import { TeamSlot } from "./TeamSlot/TeamSlot";
 import { disconnectSocket, initializeSocket, getSocket } from "../../config/socketConfig";
 import apiClient from "../../config/axiosConfig";
 import { Lobby } from "../../datatypes/Lobby";
+import { PlayerDisplay } from "./PlayerDisplay/PlayerDisplay";
 
-export const GameLobby: React.FC = () => {
+export const GameLobbyView: React.FC = () => {
   const [lobby, setLobby] = useState<Lobby>({
     id: 0,
     players: [],
@@ -24,17 +25,17 @@ export const GameLobby: React.FC = () => {
     }
 
     // Fetch initial teams from REST API
-    const fetchTeams = async () => {
+    const fetchLobby = async () => {
       try {
-        const response = await apiClient.get("/lobby/teams");
-        console.log("Initial teams fetched:", response.data);
-        setLobby({...lobby, teams: response.data})
+        const response = await apiClient.get("/lobby");
+        console.log("Initial lobby fetched:", response.data);
+        setLobby(response.data)
       } catch (error) {
         console.error("Error fetching initial teams:", error);
       }
     };
 
-    fetchTeams();
+    fetchLobby();
 
     // Initialize WebSocket connection
     const socket = initializeSocket();
@@ -61,12 +62,6 @@ export const GameLobby: React.FC = () => {
 
     // Cleanup WebSocket connection on component unmount
     return () => {
-      socket.emit("leave-lobby", {
-        id: player?.id,
-        name: player?.name,
-      }, (ack: string) => {
-        console.log(ack);
-      });
       disconnectSocket();
     };
   }, [player, navigate]);
@@ -102,9 +97,28 @@ export const GameLobby: React.FC = () => {
               )}
             </div>
           </div>
+
+          <div className="players-container">
+            <h2>Unassigned Players</h2>
+            <ul>
+              {lobby.players
+                .filter((player) =>
+                  !lobby.teams.some((team) =>
+                    team.players.some((teamPlayer) => teamPlayer.id === player.id)
+                  )
+                )
+                .map((unassignedPlayer) => (
+                  <li key={unassignedPlayer.id}>
+                    <PlayerDisplay player={unassignedPlayer} />
+                  </li>
+                ))}
+            </ul>
+          </div>
+
           <div className="action-container">
             <h1 id="hitster-tag">HITSTER</h1>
             <h1>Game Lobby</h1>
+            <button>Start</button>
           </div>
         </div>
       </div>

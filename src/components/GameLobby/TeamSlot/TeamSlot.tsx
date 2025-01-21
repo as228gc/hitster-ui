@@ -1,6 +1,7 @@
 import { getSocket } from "../../../config/socketConfig";
 import { usePlayer } from "../../../context/PlayerContext";
 import { Team } from "../../../datatypes/Team";
+import { PlayerDisplay } from "../PlayerDisplay/PlayerDisplay";
 import "./TeamSlot.css";
 
 interface TeamSlotProps {
@@ -35,10 +36,10 @@ export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
         {team.players.map((player) =>
           team.teamleader?.id === player.id ? (
             <li key={player.id}>
-              <strong>{player.name}</strong>
+              <PlayerDisplay player={player} />
             </li>
           ) : (
-            <li key={player.id}>{player.name}</li>
+            <li key={player.id}><PlayerDisplay player={player}/></li>
           )
         )}
       </ul>
