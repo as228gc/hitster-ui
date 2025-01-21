@@ -121,7 +121,12 @@
   letter-spacing: 0.3rem;
   border: 2px solid transparent;
   z-index: 3;
+  border: none;
   outline: none; /* Disable the default outline */
+}
+
+.submitNameButton:focus {
+  outline: none;
 }
 
 .submitNameButtonAnimate {
