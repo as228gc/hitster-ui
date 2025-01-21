@@ -2,7 +2,7 @@ import { getSocket } from "../../../config/socketConfig";
 import { usePlayer } from "../../../context/PlayerContext";
 import { Team } from "../../../datatypes/Team";
 import { PlayerDisplay } from "../PlayerDisplay/PlayerDisplay";
-import "./TeamSlot.css";
+import styles from "./TeamSlot.module.css";
 
 interface TeamSlotProps {
   team: Team;
@@ -28,20 +28,23 @@ export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
 
   return (
     <div
-      className={`team-slot ${team.players.length ? "filled-team" : "empty-team"}`}
+      className={`${styles.teamSlot} ${team.players.length ?
+        styles.filledTeam :
+        styles.emptyTeam
+        }`}
       onClick={handleJoin}
     >
       <h2>{team.name}</h2>
       <ul>
-        {team.players.map((player) =>
-          team.teamleader?.id === player.id ? (
-            <li key={player.id}>
-              <PlayerDisplay player={player} />
-            </li>
-          ) : (
-            <li key={player.id}><PlayerDisplay player={player}/></li>
-          )
-        )}
+        {team.players.map((player) => (
+          <li key={player.id}>
+            {team.teamleader?.id === player.id ? (
+              <strong>{player.name}</strong>
+            ) : (
+              player.name
+            )}
+          </li>
+        ))}
       </ul>
     </div>
   );

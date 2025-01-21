@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { usePlayer } from "../../context/PlayerContext";
 import apiClient from "../../config/axiosConfig";
 import bassSound from "../../assets/sounds/bass-impact.mp3";
-import "./WelcomePage.css";
+import styles from "./WelcomePage.module.css";
 
 interface Player {
   id: number;
@@ -16,14 +16,12 @@ const WelcomePage: React.FC = () => {
   const [playerName, setPlayerName] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Redirect if a player already exists
   useEffect(() => {
     if (player) {
       navigate("/lobby");
     }
   }, [player, navigate]);
 
-  // Play click sound
   const playClickSound = () => {
     const audio = new Audio(bassSound);
     audio.play();
@@ -31,60 +29,55 @@ const WelcomePage: React.FC = () => {
 
   const createPlayer = () => {
     if (playerName.trim()) {
-      setIsAnimating(true); // Start the animation
-      playClickSound(); // Play the sound
+      setIsAnimating(true);
+      playClickSound();
 
-      // Add the dark overlay effect
-      document.querySelector(".overlay")?.classList.add("dark");
+      document.querySelector(`.${styles.overlay}`)?.classList.add(styles.overlayDark);
 
       setTimeout(() => {
         apiClient
           .post("/lobby/players/add", { name: playerName })
           .then((response) => {
-            console.log("Player created:", response.data);
             const newPlayer: Player = { id: response.data.id, name: response.data.name };
             setPlayer(newPlayer);
-            navigate("/lobby"); // Navigate after animation ends
+            navigate("/lobby");
           })
-          .catch((error) => {
+          .catch(() => {
             alert("Error creating player. Please try again.");
-            console.error(error);
-            navigate("/"); // Navigate back to the welcome page
           });
-      }, 1500); // Match the duration of the animation
+      }, 1500);
     } else {
       alert("Please enter a valid name.");
     }
   };
 
   return (
-    <div className="container">
-      <div className="overlay"></div> {/* Dark overlay */}
-      <div className="title-container">
-        <h1 className="title">welcome to</h1>
-        <h1 id="hitster-tag">HITSTER</h1>
+    <div className={styles.container}>
+      <div className={styles.overlay}></div>
+      <div className={styles.titleContainer}>
+        <h1 className={styles.title}>welcome to</h1>
+        <h1 className={styles.hitsterTag}>HITSTER</h1>
       </div>
 
-      <div className="form">
+      <div className={styles.form}>
         <input
           type="text"
-          id="name-input"
+          className={styles.nameInput}
           placeholder="Enter your name"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
         />
         <button
-          id="submit-name-button"
+          className={`${styles.submitNameButton} ${isAnimating ? styles.submitNameButtonAnimate : ""}`}
           onClick={createPlayer}
-          className={isAnimating ? "animate" : ""}
         >
           PLAY
         </button>
       </div>
-      <div className="name-tag">
-        <span id="leading-line"></span>
-        <p>Alex Söderberg</p>
-        <span id="trailing-line"></span>
+      <div className={styles.nameTag}>
+        <span className={styles.leadingLine}></span>
+        <p className={styles.nameTagText}>Alex Söderberg</p>
+        <span className={styles.trailingLine}></span>
       </div>
     </div>
   );

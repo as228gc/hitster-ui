@@ -1,0 +1,117 @@
+.lobbyContainer {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.gameLobbyContainer {
+  display: flex;
+  align-items: center;
+  width: 80vw;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
+  font-family: Arial, sans-serif;
+  color: #ffd700;
+  /* Gold text */
+}
+
+.title {
+  color: #ffd700;
+  /* Gold */
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 5px #000;
+}
+
+.teamsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 8px;
+  width: fit-content;
+  gap: 10px;
+  max-height: 70vh;
+  background: transparent;
+  /* Dark gray background */
+  border: 1px solid white;
+}
+
+.playersContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid white;
+  width: fit-content;
+  background: transparent;
+}
+
+.playerList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playerItem {
+  padding: 8px;
+  margin: 4px 0;
+  background: #444;
+  /* Slightly lighter gray */
+  border-radius: 4px;
+  color: #ffd700;
+  /* Gold text */
+}
+
+.actionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaveButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  width: 20px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.door {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.doorFrame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.doorPanel {
+  position: absolute;
+  width: 80%;
+  height: 90%;
+  background: white;
+  border-radius: 3px;
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+.leaveButton:hover .doorPanel {
+  transform: rotateY(-75deg);
+  /* Door "opens" */
+}
