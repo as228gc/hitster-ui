@@ -20,7 +20,7 @@ export const initializeSocket = (): Socket => {
       console.log("WebSocket connected:", socket?.id);
     });
 
-    socket.on("disconnect", (reason) => {
+    socket.on("disconnect", (reason: string) => {
       console.log("WebSocket disconnected:", reason);
       if (reason === "io server disconnect") {
         // Reconnect manually if the server disconnected the client
@@ -28,7 +28,7 @@ export const initializeSocket = (): Socket => {
       }
     });
 
-    socket.on("connect_error", (error) => {
+    socket.on("connect_error", (error: Error) => {
       console.error("WebSocket connection error:", error);
     });
   }
