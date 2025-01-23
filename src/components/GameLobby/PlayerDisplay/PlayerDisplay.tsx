@@ -1,5 +1,5 @@
 import { Player } from "../../../datatypes/Player";
-import "./PlayerDisplay.css";
+import styles from "./PlayerDisplay.module.css"
 
 interface PlayerDisplayProps {
   player: Player;
@@ -7,7 +7,7 @@ interface PlayerDisplayProps {
 
 export const PlayerDisplay: React.FC<PlayerDisplayProps> = ({ player }) => {
   return (
-    <div className="player-display">
+    <div className={styles.playerDisplay}>
       <span>{player.name}</span>
     </div>
   );

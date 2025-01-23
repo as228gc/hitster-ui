@@ -27,25 +27,32 @@ export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
   };
 
   return (
-    <div
-      className={`${styles.teamSlot} ${team.players.length ?
-        styles.filledTeam :
-        styles.emptyTeam
-        }`}
-      onClick={handleJoin}
-    >
-      <h2>{team.name}</h2>
-      <ul>
-        {team.players.map((player) => (
-          <li key={player.id}>
-            {team.teamleader?.id === player.id ? (
-              <strong>{player.name}</strong>
-            ) : (
-              player.name
-            )}
-          </li>
-        ))}
-      </ul>
+    <div onClick={handleJoin}>
+      {
+        team.players.length ? (
+          <div className={`${styles.teamSlot} ${styles.filledTeam}`}>
+            <h2>{team.name}</h2>
+            <ul>
+              {team.players.map((player) => (
+                <li key={player.id}>
+                  {team.teamleader?.id === player.id ? (
+                    <strong>{player.name}</strong>
+                  ) : (
+                    <PlayerDisplay player={player} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className={`${styles.teamSlot} ${styles.emptyTeam}`}>
+            <div className={styles.plus}>
+              <span className={styles.verticalLine}></span>
+              <span className={styles.horizontalLine}></span>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };

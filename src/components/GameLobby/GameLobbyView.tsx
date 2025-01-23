@@ -78,10 +78,10 @@ export const GameLobbyView: React.FC = () => {
 
   const getVisibleTeams = () => {
     const visibleTeams: Team[] = [];
-  
+
     // Always add Team 1 and Team 2
     lobby.teams.slice(0, 2).forEach((team) => visibleTeams.push(team));
-  
+
     // Dynamically add teams starting from Team 3
     for (let i = 2; i < lobby.teams.length; i++) {
       const previousTeamsPopulated = visibleTeams.every((team) => team.players.length > 0);
@@ -91,9 +91,9 @@ export const GameLobbyView: React.FC = () => {
         break; // Stop showing teams once the condition is not met
       }
     }
-  
+
     return visibleTeams;
-  };  
+  };
 
   return (
     <>
@@ -110,7 +110,11 @@ export const GameLobbyView: React.FC = () => {
               {lobby.teams.length === 0 ? (
                 <p>No teams available</p>
               ) : (
-                getVisibleTeams().map((team) => <TeamSlot key={team.id} team={team} />)
+                <div className={styles.teamsGrid}>
+                  {getVisibleTeams().map((team) => (
+                    <TeamSlot key={team.id} team={team} />
+                  ))}
+                </div>
               )}
             </div>
             <div className={styles.playersContainer}>
