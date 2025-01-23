@@ -120,7 +120,7 @@ export const GameLobbyView: React.FC = () => {
           <div className={styles.actionContainer}>
             <h1 id="hitster-tag">HITSTER</h1>
             <h1>Game Lobby</h1>
-            <button>Start Game</button>
+            <button onClick={handleGameStart}>Start Game</button>
           </div>
         </div>
       </div>
