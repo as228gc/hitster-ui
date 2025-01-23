@@ -1,34 +1,79 @@
-.emptyTeam {
-  display: block;
-  width: 100%;
-  padding: 5px;
-  border: 2px dashed grey;
-  border-radius: 5px;
-  text-align: center;
-  color: grey;
-}
-
-.filledTeam {
-  display: block;
-  width: 100%;
-  padding: 5px;
-  border: 2px solid #ffd700;
-  border-radius: 5px;
-  text-align: center;
-  color: #ffd700;
-}
-
 .teamSlot {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  min-height: 5rem;
   padding: 5px;
-  border: 2px solid #ffd700;
   border-radius: 5px;
   text-align: center;
-  color: #ffd700;
   transition: transform 0.2s;
 }
 
 .teamSlot:hover {
-  cursor: pointer;
   transform: scale(1.1);
+  cursor: pointer;
+}
+
+.filledTeam {
+  border: 2px solid #ffffff4b;
+  color: #ffd700;
+}
+
+.emptyTeam {
+  border: 2px dashed grey;
+  color: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emptyTeam:hover {
+  border-color: #ffffff4b; /* Optional hover effect for the container border */
+}
+
+.plus {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem; /* Equal width */
+  height: 3rem; /* Equal height */
+  margin: auto; /* Ensure centering within parent container */
+}
+
+.verticalLine,
+.horizontalLine {
+  position: absolute;
+  background: grey;
+  border-radius: 2px; /* Rounded edges */
+  transition: background-color 0.3s ease; /* Smooth transition when not hovered */
+}
+
+/* Line dimensions */
+.verticalLine {
+  width: 0.3rem; /* Thickness of vertical line */
+  height: 80%; /* Full height of the plus container */
+}
+
+.horizontalLine {
+  height: 0.3rem; /* Thickness of horizontal line */
+  width: 80%; /* Full width of the plus container */
+}
+
+/* Add animation only on hover */
+.emptyTeam:hover .verticalLine,
+.emptyTeam:hover .horizontalLine {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet, red);
+  background-size: 200% 200%;
+  animation: continuousGradient 3s linear infinite; /* Start animation on hover */
+}
+
+/* Keyframes for smooth continuous gradient flow */
+@keyframes continuousGradient {
+  0% {
+    background-position: 0% 50%; /* Start position */
+  }
+  100% {
+    background-position: 200% 50%; /* End position smoothly loops */
+  }
 }
