@@ -7,6 +7,7 @@ import { disconnectSocket, initializeSocket, getSocket } from "../../config/sock
 import apiClient from "../../config/axiosConfig";
 import { Lobby } from "../../datatypes/Lobby";
 import { PlayerDisplay } from "./PlayerDisplay/PlayerDisplay";
+import { Team } from "../../datatypes/Team";
 
 export const GameLobbyView: React.FC = () => {
   const [lobby, setLobby] = useState<Lobby>({
@@ -24,62 +25,75 @@ export const GameLobbyView: React.FC = () => {
       return;
     }
 
-    // Fetch initial teams from REST API
     const fetchLobby = async () => {
       try {
         const response = await apiClient.get("/lobby");
         console.log("Initial lobby fetched:", response.data);
-        setLobby(response.data)
+        setLobby(response.data);
       } catch (error) {
-        console.error("Error fetching initial teams:", error);
+        console.error("Error fetching initial lobby:", error);
       }
     };
 
     fetchLobby();
 
-    // Initialize WebSocket connection
     const socket = initializeSocket();
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket server");
-      // Notify server of the player joining the lobby
-      socket.emit("join-lobby", {
-        playerId: player.id,
-        playerName: player.name
-      }, (ack: string) => {
-        console.log(ack);
-      });
+      socket.emit(
+        "join-lobby",
+        { playerId: player.id, playerName: player.name },
+        (ack: string) => {
+          console.log(ack);
+        }
+      );
     });
 
     socket.on("lobby-updated", (updatedLobby: Lobby) => {
       console.log("Lobby updated via WebSocket:", updatedLobby);
-      setLobby({
-        id: updatedLobby.id,
-        players: updatedLobby.players,
-        teams: updatedLobby.teams
-      });
+      setLobby(updatedLobby);
     });
 
-    // Cleanup WebSocket connection on component unmount
     return () => {
       disconnectSocket();
     };
   }, [player, navigate]);
 
   const handleLeave = () => {
-    getSocket().emit("leave-lobby",
+    getSocket().emit(
+      "leave-lobby",
       player,
       (ack: string) => {
         console.log(ack);
-        console.log("Leaving lobby");
         clearPlayer();
         navigate("/");
-      });
+      }
+    );
   };
 
   const handleGameStart = () => {
     console.log("Starting game");
-  }
+  };
+
+  const getVisibleTeams = () => {
+    const visibleTeams: Team[] = [];
+  
+    // Always add Team 1 and Team 2
+    lobby.teams.slice(0, 2).forEach((team) => visibleTeams.push(team));
+  
+    // Dynamically add teams starting from Team 3
+    for (let i = 2; i < lobby.teams.length; i++) {
+      const previousTeamsPopulated = visibleTeams.every((team) => team.players.length > 0);
+      if (previousTeamsPopulated || lobby.teams[i].players.length > 0) {
+        visibleTeams.push(lobby.teams[i]);
+      } else {
+        break; // Stop showing teams once the condition is not met
+      }
+    }
+  
+    return visibleTeams;
+  };  
 
   return (
     <>
@@ -96,7 +110,7 @@ export const GameLobbyView: React.FC = () => {
               {lobby.teams.length === 0 ? (
                 <p>No teams available</p>
               ) : (
-                lobby.teams.map((team) => <TeamSlot key={team.id} team={team} />)
+                getVisibleTeams().map((team) => <TeamSlot key={team.id} team={team} />)
               )}
             </div>
             <div className={styles.playersContainer}>
