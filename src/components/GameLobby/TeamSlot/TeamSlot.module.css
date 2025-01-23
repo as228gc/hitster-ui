@@ -1,4 +1,4 @@
-.empty-team {
+.emptyTeam {
   display: block;
   width: 100%;
   padding: 5px;
@@ -8,7 +8,7 @@
   color: grey;
 }
 
-.filled-team {
+.filledTeam {
   display: block;
   width: 100%;
   padding: 5px;
@@ -18,9 +18,8 @@
   color: #ffd700;
 }
 
-.team-slot {
+.teamSlot {
   display: block;
-  width: 200px;
   padding: 5px;
   border: 2px solid #ffd700;
   border-radius: 5px;
@@ -29,7 +28,7 @@
   transition: transform 0.2s;
 }
 
-.team-slot:hover {
+.teamSlot:hover {
   cursor: pointer;
   transform: scale(1.1);
 }

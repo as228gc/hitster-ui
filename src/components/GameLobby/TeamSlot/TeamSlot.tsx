@@ -1,46 +1,50 @@
-import apiClient from "../../../config/axiosConfig";
+import { getSocket } from "../../../config/socketConfig";
 import { usePlayer } from "../../../context/PlayerContext";
 import { Team } from "../../../datatypes/Team";
-import "./TeamSlot.css";
+import { PlayerDisplay } from "../PlayerDisplay/PlayerDisplay";
+import styles from "./TeamSlot.module.css";
 
 interface TeamSlotProps {
   team: Team;
-  onUpdateTeams: (updatedTeams: Team[]) => void; // Callback to update all teams
 }
 
-export const TeamSlot: React.FC<TeamSlotProps> = ({ team, onUpdateTeams }) => {
+export const TeamSlot: React.FC<TeamSlotProps> = ({ team }) => {
   const { player } = usePlayer();
+  const socket = getSocket();
 
-  const handleJoin = async () => {
-    try {
-      console.log(`Joining team: ${team.id} with player: ${player?.id}`);
-
-      // Add player to the team
-      await apiClient.post(`/lobby/teams/${team.id}/add-player`, { playerId: player?.id });
-
-      // Fetch the latest state of all teams
-      const response = await apiClient.get<Team[]>("/lobby/teams");
-      console.log("Updated teams data:", response.data);
-
-      // Notify parent component to update all teams
-      onUpdateTeams(response.data);
-    } catch (error) {
-      console.error("Error joining team:", error);
-    }
+  const handleJoin = () => {
+    console.log(`Joining team: ${team.id} with player: ${player?.id}`);
+    socket.emit(
+      "join-team",
+      {
+        playerId: player?.id,
+        teamId: team.id
+      },
+      (ack: string) => {
+        console.log(ack);
+      }
+    );
   };
 
   return (
     <div
-      className={`team-slot ${team.players.length ? "filled-team" : "empty-team"}`}
+      className={`${styles.teamSlot} ${team.players.length ?
+        styles.filledTeam :
+        styles.emptyTeam
+        }`}
       onClick={handleJoin}
     >
       <h2>{team.name}</h2>
       <ul>
-        {team.players.map((player) =>
-          team.teamleader?.id === player.id ? null : (
-            <li key={player.id}>{player.name}</li>
-          )
-        )}
+        {team.players.map((player) => (
+          <li key={player.id}>
+            {team.teamleader?.id === player.id ? (
+              <strong>{player.name}</strong>
+            ) : (
+              player.name
+            )}
+          </li>
+        ))}
       </ul>
     </div>
   );
