@@ -8,6 +8,7 @@ import apiClient from "../../config/axiosConfig";
 import { Lobby } from "../../datatypes/Lobby";
 import { PlayerDisplay } from "./PlayerDisplay/PlayerDisplay";
 import { Team } from "../../datatypes/Team";
+import { LeaveButton } from "../buttons/LeaveButton/LeaveButton";
 
 export const GameLobbyView: React.FC = () => {
   const [lobby, setLobby] = useState<Lobby>({
@@ -15,6 +16,10 @@ export const GameLobbyView: React.FC = () => {
     players: [],
     teams: [],
   });
+  const playerMock = {
+    id: 1,
+    name: "Alex"
+  }
 
   const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate();
@@ -97,13 +102,10 @@ export const GameLobbyView: React.FC = () => {
 
   return (
     <>
-      <button className={styles.leaveButton} onClick={handleLeave}>
-        <div className={styles.door}>
-          <div className={styles.doorFrame}></div>
-          <div className={styles.doorPanel}></div>
-        </div>
-      </button>
       <div className={styles.lobbyContainer}>
+        <div className={styles.topBar}>
+          <LeaveButton onLeave={handleLeave} />
+        </div>
         <div className={styles.gameLobbyContainer}>
           <div className="flex center column">
             <div className={styles.teamsContainer}>
@@ -117,29 +119,40 @@ export const GameLobbyView: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className={styles.playersContainer}>
-              <h2>Unassigned Players</h2>
-              <ul className={styles.playerList}>
-                {lobby.players
-                  .filter(
-                    (player) =>
-                      !lobby.teams.some((team) =>
-                        team.players.some((teamPlayer) => teamPlayer.id === player.id)
-                      )
-                  )
-                  .map((unassignedPlayer) => (
-                    <li className={styles.playerItem} key={unassignedPlayer.id}>
-                      <PlayerDisplay player={unassignedPlayer} />
-                    </li>
-                  ))}
-              </ul>
-            </div>
           </div>
+
           <div className={styles.actionContainer}>
             <h1 id="hitster-tag">HITSTER</h1>
             <h1>Game Lobby</h1>
             <button onClick={handleGameStart}>Start Game</button>
           </div>
+        </div>
+        <div>
+          <ul className={styles.playerList}>
+            {lobby.players
+              .filter(
+                (player) =>
+                  !lobby.teams.some((team) =>
+                    team.players.some((teamPlayer) => teamPlayer.id === player.id)
+                  )
+              )
+              .map((unassignedPlayer) => (
+                <li className={styles.playerItem} key={unassignedPlayer.id}>
+                  <PlayerDisplay player={unassignedPlayer} />
+                </li>
+              ))}
+
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+            <li><PlayerDisplay player={playerMock} /></li>
+
+          </ul>
         </div>
       </div>
     </>
