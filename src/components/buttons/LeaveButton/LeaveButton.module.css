@@ -1,0 +1,42 @@
+.leaveButton {
+  position: absolute; /* Positioning relative to the viewport */
+  top: 15px; /* Distance from the top */
+  left: 15px; /* Distance from the left */
+  z-index: 10; /* Ensure it's above other elements */
+  background: none; /* Transparent background */
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.door {
+  position: relative;
+  width: 30px; /* Adjust width */
+  height: 50px; /* Adjust height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.doorFrame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.doorPanel {
+  position: absolute;
+  width: 80%;
+  height: 90%;
+  background: white;
+  border-radius: 3px;
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+.leaveButton:hover .doorPanel {
+  transform: rotateY(-75deg);
+  /* Door "opens" */
+}

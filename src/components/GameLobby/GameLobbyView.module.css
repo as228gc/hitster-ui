@@ -1,8 +1,14 @@
 .lobbyContainer {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
   width: 100vw;
-  height: 100vh;
+  max-height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .gameLobbyContainer {
@@ -45,15 +51,18 @@
 .playersContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid white;
-  width: fit-content;
   background: transparent;
+  max-width: 60%;
 }
 
 .playerList {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  flex-wrap: wrap;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -63,49 +72,4 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-.leaveButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  position: relative;
-  width: 20px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.door {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.doorFrame {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid white;
-  border-radius: 5px;
-}
-
-.doorPanel {
-  position: absolute;
-  width: 80%;
-  height: 90%;
-  background: white;
-  border-radius: 3px;
-  transform-origin: left center;
-  transition: transform 0.3s ease;
-}
-
-.leaveButton:hover .doorPanel {
-  transform: rotateY(-75deg);
-  /* Door "opens" */
 }
