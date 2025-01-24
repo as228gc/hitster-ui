@@ -127,8 +127,7 @@ export const GameLobbyView: React.FC = () => {
             <button onClick={handleGameStart}>Start Game</button>
           </div>
         </div>
-        <div className={styles.playersContainer}>
-          <h2>Unassigned Players</h2>
+        <div>
           <ul className={styles.playerList}>
             {lobby.players
               .filter(

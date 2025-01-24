@@ -48,24 +48,13 @@
   width: 100%; /* Full width for wrapping */
 }
 
-.playersContainer {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid white;
-  background: transparent;
-  max-width: 60%;
-}
-
 .playerList {
   display: flex;
   justify-content: space-around;
   gap: 15px;
   flex-wrap: wrap;
   list-style-type: none;
-  padding: 0;
-  margin: 0;
+  padding: 3rem;
 }
 
 .actionContainer {
