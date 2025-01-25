@@ -78,6 +78,7 @@ export const GameLobbyView: React.FC = () => {
   };
 
   const handleGameStart = () => {
+    navigate("/board")
     console.log("Starting game");
   };
 
