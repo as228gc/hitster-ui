@@ -60,6 +60,11 @@ export const GameLobbyView: React.FC = () => {
       setLobby(updatedLobby);
     });
 
+    socket.on("game-started", () => {
+      console.log("Game started via WebSocket");
+      navigate("/board");
+    })
+
     return () => {
       disconnectSocket();
     };
@@ -79,12 +84,13 @@ export const GameLobbyView: React.FC = () => {
 
   const handleGameStart = async () => {
     try {
-      const response = await apiClient.post(`/game/start`);
-      console.log("Game started:", response.data);
+      getSocket().emit("game-start", (ack: string) => {
+        console.log(ack);
+      });
+      navigate("/board")
     } catch (error) {
       console.error("Error starting game:", error);
     }
-    navigate("/board")
     console.log("Starting game");
   };
 
