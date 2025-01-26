@@ -9,6 +9,7 @@ import { Lobby } from "../../datatypes/Lobby";
 import { PlayerDisplay } from "./PlayerDisplay/PlayerDisplay";
 import { Team } from "../../datatypes/Team";
 import { LeaveButton } from "../buttons/LeaveButton/LeaveButton";
+import { Player } from "../../datatypes/Player";
 
 export const GameLobbyView: React.FC = () => {
   const [lobby, setLobby] = useState<Lobby>({
@@ -59,6 +60,15 @@ export const GameLobbyView: React.FC = () => {
       console.log("Lobby updated via WebSocket:", updatedLobby);
       setLobby(updatedLobby);
     });
+
+    socket.on("player-added", (players: Player[]) => {
+      setLobby((prevLobby) => {
+        return {
+          ...prevLobby,
+          players: players
+        };
+      });
+    })
 
     socket.on("game-started", () => {
       console.log("Game started via WebSocket");
@@ -154,17 +164,6 @@ export const GameLobbyView: React.FC = () => {
                   <PlayerDisplay player={unassignedPlayer} />
                 </li>
               ))}
-
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-            <li><PlayerDisplay player={playerMock} /></li>
-
           </ul>
         </div>
       </div>
