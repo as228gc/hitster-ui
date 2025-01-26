@@ -77,7 +77,13 @@ export const GameLobbyView: React.FC = () => {
     );
   };
 
-  const handleGameStart = () => {
+  const handleGameStart = async () => {
+    try {
+      const response = await apiClient.post(`/game/start`);
+      console.log("Game started:", response.data);
+    } catch (error) {
+      console.error("Error starting game:", error);
+    }
     navigate("/board")
     console.log("Starting game");
   };

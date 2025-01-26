@@ -3,5 +3,5 @@ export interface Song {
   title: string,
   artist: string,
   releaseYear: number,
-  songUrl: string
+  url: string
 }

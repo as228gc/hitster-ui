@@ -6,5 +6,5 @@ export interface Team {
   name: string;
   players: Player[];
   teamleader: Player | null;
-  timeline: Song[] | null;
+  timeline: Song[];
 }
