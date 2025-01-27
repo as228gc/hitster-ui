@@ -40,7 +40,7 @@ export const GameBoardView: React.FC = () => {
     // Fetch team data based on the player's ID
     const fetchTeamForPlayer = async () => {
       try {
-        const response = await apiClient.get<Team>(`/lobby/teams/player/${player.id}`);
+        const response = await apiClient.get<Team>(`/api/lobby/teams/player/${player.id}`);
         console.log("Team fetched for player:", response.data);
         setTeam(response.data);
       } catch (error) {
@@ -76,7 +76,7 @@ export const GameBoardView: React.FC = () => {
 
   const handleEndGame = async () => {
     try {
-      await apiClient.post(`/game/end`);
+      await apiClient.post(`/api/game/end`);
       navigate("/lobby");
     } catch (error) {
       console.error("Error ending game:", error);

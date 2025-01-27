@@ -36,7 +36,7 @@ const WelcomePage: React.FC = () => {
 
       setTimeout(() => {
         apiClient
-          .post("/lobby/players/add", { name: playerName })
+          .post("/api/lobby/players/add", { name: playerName })
           .then((response) => {
             const newPlayer: Player = { id: response.data.id, name: response.data.name };
             setPlayer(newPlayer);

@@ -33,7 +33,7 @@ export const GameLobbyView: React.FC = () => {
 
     const fetchLobby = async () => {
       try {
-        const response = await apiClient.get("/lobby");
+        const response = await apiClient.get("/api/lobby");
         console.log("Initial lobby fetched:", response.data);
         setLobby(response.data);
       } catch (error) {

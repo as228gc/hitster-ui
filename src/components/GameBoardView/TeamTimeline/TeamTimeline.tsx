@@ -15,7 +15,7 @@ export const TeamTimeline: React.FC<TeamTimelineProps> = ({ team }) => {
   useEffect(() => {
     const fetchSongCards = async () => {
       try {
-        const response = await apiClient.get(`/game/teams/${team?.id}/songcards`)
+        const response = await apiClient.get(`/api/game/teams/${team?.id}/songcards`)
         response.data.forEach((songCard: Song | null) => setSongs([...songs, songCard]))
       } catch (error) {
         console.log("Error fetching songs" + error)
