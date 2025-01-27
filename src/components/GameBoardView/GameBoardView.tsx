@@ -11,7 +11,9 @@ export const GameBoardView: React.FC = () => {
   const { player } = usePlayer();
   const navigate = useNavigate();
   const [teams, setTeams] = useState<Team[]>([]);
-  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
+  const [activeTeam, setActiveTeam] = useState<Team | null>(null);
+  const [currentRound, setCurrentRound] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!player) {
@@ -19,39 +21,48 @@ export const GameBoardView: React.FC = () => {
       return;
     }
 
-    const fetchTeams = async () => {
+    const fetchGameState = async () => {
       try {
         const response = await apiClient.get("/api/game/state");
-        console.log("Teams fetched:", response.data);
-        setTeams(response.data);
+        const { teams: fetchedTeams, currentRound, activeTeamId } = response.data;
 
-        // Find the current player's team
-        const playerTeam = response.data.find((team: Team) =>
-          team.players.some((teamPlayer) => teamPlayer.id === player.id)
-        );
+        setTeams(fetchedTeams);
+        setCurrentRound(currentRound);
 
-        if (playerTeam) {
-          setCurrentTeam(playerTeam);
-        } else {
-          console.warn("Player is not assigned to any team.");
-        }
+        // Set the active team
+        const active = fetchedTeams.find((team: Team) => team.id === activeTeamId);
+        setActiveTeam(active || null);
       } catch (error) {
-        console.error("Error fetching teams:", error);
+        console.error("Error fetching game state:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTeams();
+    const setupSocket = async () => {
+      const socket = await initializeSocket();
 
-    // Cleanup WebSocket connection on unmount
-    initializeSocket();
+      socket.on("game-state-updated", (gameState) => {
+        console.log("Game state updated via WebSocket:", gameState);
+
+        const { teams: updatedTeams, currentRound, activeTeamId } = gameState;
+
+        setTeams(updatedTeams);
+        setCurrentRound(currentRound);
+
+        // Set the active team
+        const active = updatedTeams.find((team: Team) => team.id === activeTeamId);
+        setActiveTeam(active || null);
+      });
+    };
+
+    setupSocket();
+    fetchGameState();
+
     return () => {
       disconnectSocket();
     };
   }, [player, navigate]);
-
-  if (!currentTeam) {
-    return <div>Loading your team's timeline...</div>;
-  }
 
   const handleGameEnd = async () => {
     try {
@@ -60,18 +71,42 @@ export const GameBoardView: React.FC = () => {
     } catch (error) {
       console.error("Error ending game:", error);
     }
+  };
+
+  if (isLoading) {
+    return <div>Loading game data...</div>;
+  }
+
+  if (!activeTeam) {
+    return <div>Unable to find your team. Please try rejoining the game.</div>;
   }
 
   return (
     <div className={styles.gameBoardView}>
       <h1>Game Board</h1>
-      <h2>Team: {currentTeam.name}</h2>
+      <h2>Round: {currentRound}</h2>
+      <h3>Active Team: {activeTeam.name}</h3>
 
-      <TeamTimeline team={currentTeam} />
-      
+      {/* Display Active Team Timeline */}
+      <div className={styles.activeTeamSection}>
+        <h3>Your Team's Timeline</h3>
+        <TeamTimeline team={activeTeam} />
+      </div>
 
+      {/* Display Other Teams */}
+      <div className={styles.otherTeamsSection}>
+        <h3>Other Teams</h3>
+        {teams
+          .filter((team) => team.id !== activeTeam.id)
+          .map((team) => (
+            <div key={team.id} className={styles.teamSection}>
+              <h4>{team.name}</h4>
+              <TeamTimeline team={team} />
+            </div>
+          ))}
+      </div>
 
-      <button onClick={handleGameEnd}>End game</button>
+      <button onClick={handleGameEnd}>End Game</button>
     </div>
   );
 };
