@@ -17,10 +17,6 @@ export const GameLobbyView: React.FC = () => {
     players: [],
     teams: [],
   });
-  const playerMock = {
-    id: 1,
-    name: "Alex"
-  }
 
   const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate();
@@ -41,67 +37,88 @@ export const GameLobbyView: React.FC = () => {
       }
     };
 
+    const setupSocket = async () => {
+      try {
+        const socket = await initializeSocket(); // Ensure socket is initialized
+        socket.on("connect", () => {
+          console.log("Connected to WebSocket server:", socket.id);
+          socket.emit(
+            "join-lobby",
+            { playerId: player.id, playerName: player.name },
+            (ack: string) => console.log(ack)
+          );
+        });
+
+        socket.on("lobby-updated", (updatedLobby: Lobby) => {
+          console.log("Lobby updated via WebSocket:", updatedLobby);
+          setLobby(updatedLobby);
+        });
+
+        socket.on("player-added", (players: Player[]) => {
+          setLobby((prevLobby) => ({
+            ...prevLobby,
+            players,
+          }));
+        });
+
+        socket.on("game-started", () => {
+          console.log("Game started via WebSocket");
+          navigate("/board");
+        });
+      } catch (error) {
+        console.error("Error setting up WebSocket:", error);
+      }
+    };
+
     fetchLobby();
-
-    const socket = initializeSocket();
-
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket server");
-      socket.emit(
-        "join-lobby",
-        { playerId: player.id, playerName: player.name },
-        (ack: string) => {
-          console.log(ack);
-        }
-      );
-    });
-
-    socket.on("lobby-updated", (updatedLobby: Lobby) => {
-      console.log("Lobby updated via WebSocket:", updatedLobby);
-      setLobby(updatedLobby);
-    });
-
-    socket.on("player-added", (players: Player[]) => {
-      setLobby((prevLobby) => {
-        return {
-          ...prevLobby,
-          players: players
-        };
-      });
-    })
-
-    socket.on("game-started", () => {
-      console.log("Game started via WebSocket");
-      navigate("/board");
-    })
+    setupSocket();
 
     return () => {
+      console.log("Disconnecting from WebSocket server");
       disconnectSocket();
     };
   }, [player, navigate]);
 
-  const handleLeave = () => {
-    getSocket().emit(
-      "leave-lobby",
-      player,
-      (ack: string) => {
-        console.log(ack);
-        clearPlayer();
-        navigate("/");
+
+  const handleLeave = async () => {
+    try {
+      const socket = await initializeSocket();
+      if (socket.connected) {
+        socket.emit(
+          "leave-lobby",
+          player,
+          (ack: string) => {
+            console.log(ack);
+            clearPlayer();
+            navigate("/");
+          }
+        );
       }
-    );
+    } catch (error) {
+      console.error("Error leaving lobby:", error);
+    }
   };
 
   const handleGameStart = async () => {
     try {
-      getSocket().emit("game-start", (ack: string) => {
-        console.log(ack);
-      });
-      navigate("/board")
+      const socket = await initializeSocket();
+      if (socket.connected) {
+        socket.emit("game-start", (ack: string) => {
+          console.log(ack);
+        });
+        navigate("/board");
+      }
     } catch (error) {
       console.error("Error starting game:", error);
     }
-    console.log("Starting game");
+  };
+
+  const handleSpotifyLogin = () => {
+    // Save the current player in session storage (if needed)
+    sessionStorage.setItem("player", JSON.stringify(player));
+
+    // Redirect to Spotify login
+    window.location.href = "http://localhost:8080/api/spotify/login";
   };
 
   const getVisibleTeams = () => {
@@ -124,49 +141,47 @@ export const GameLobbyView: React.FC = () => {
   };
 
   return (
-    <>
-      <div className={styles.lobbyContainer}>
-        <div className={styles.topBar}>
-          <LeaveButton onLeave={handleLeave} />
-        </div>
-        <div className={styles.gameLobbyContainer}>
-          <div className="flex center column">
-            <div className={styles.teamsContainer}>
-              {lobby.teams.length === 0 ? (
-                <p>No teams available</p>
-              ) : (
-                <div className={styles.teamsGrid}>
-                  {getVisibleTeams().map((team) => (
-                    <TeamSlot key={team.id} team={team} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.actionContainer}>
-            <h1 id="hitster-tag">HITSTER</h1>
-            <h1>Game Lobby</h1>
-            <button onClick={handleGameStart}>Start Game</button>
+    <div className={styles.lobbyContainer}>
+      <div className={styles.topBar}>
+        <LeaveButton onLeave={handleLeave} />
+      </div>
+      <div className={styles.gameLobbyContainer}>
+        <div className="flex center column">
+          <div className={styles.teamsContainer}>
+            {lobby.teams.length === 0 ? (
+              <p>No teams available</p>
+            ) : (
+              <div className={styles.teamsGrid}>
+                {getVisibleTeams().map((team) => (
+                  <TeamSlot key={team.id} team={team} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
-        <div>
-          <ul className={styles.playerList}>
-            {lobby.players
-              .filter(
-                (player) =>
-                  !lobby.teams.some((team) =>
-                    team.players.some((teamPlayer) => teamPlayer.id === player.id)
-                  )
-              )
-              .map((unassignedPlayer) => (
-                <li className={styles.playerItem} key={unassignedPlayer.id}>
-                  <PlayerDisplay player={unassignedPlayer} />
-                </li>
-              ))}
-          </ul>
+        <div className={styles.actionContainer}>
+          <h1 id="hitster-tag">HITSTER</h1>
+          <h1>Game Lobby</h1>
+          <button onClick={handleGameStart}>Start Game</button>
+          <button onClick={handleSpotifyLogin}>Login to Spotify</button>
         </div>
       </div>
-    </>
+      <div>
+        <ul className={styles.playerList}>
+          {lobby.players
+            .filter(
+              (player) =>
+                !lobby.teams.some((team) =>
+                  team.players.some((teamPlayer) => teamPlayer.id === player.id)
+                )
+            )
+            .map((unassignedPlayer) => (
+              <li className={styles.playerItem} key={unassignedPlayer.id}>
+                <PlayerDisplay player={unassignedPlayer} />
+              </li>
+            ))}
+        </ul>
+      </div>
+    </div>
   );
 };

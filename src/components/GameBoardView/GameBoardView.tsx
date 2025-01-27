@@ -18,40 +18,49 @@ export const GameBoardView: React.FC = () => {
       return;
     }
 
-    // Initialize WebSocket connection
-    const socket = initializeSocket();
-
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket server");
-    });
-
-    // Listen for team updates in real time
-    socket.on("team-updated", (updatedTeam: Team) => {
-      if (updatedTeam.id === team?.id) {
-        console.log("Team updated via WebSocket:", updatedTeam);
-        setTeam(updatedTeam);
-      }
-    });
-
-    socket.on("game-state-updated", (updatedTeams: Team[]) => {
-      console.log("Game state updated via WebSocket");
-    });
-
-    // Fetch team data based on the player's ID
-    const fetchTeamForPlayer = async () => {
+    // Function to initialize WebSocket connection and fetch data
+    const setupSocketAndFetchTeam = async () => {
       try {
-        const response = await apiClient.get<Team>(`/api/lobby/teams/player/${player.id}`);
-        console.log("Team fetched for player:", response.data);
-        setTeam(response.data);
+        const socket = await initializeSocket(); // Wait for WebSocket connection
+
+        // Set up WebSocket event listeners
+        socket.on("connect", () => {
+          console.log("Connected to WebSocket server:", socket.id);
+        });
+
+        socket.on("team-updated", (updatedTeam: Team) => {
+          if (updatedTeam.id === team?.id) {
+            console.log("Team updated via WebSocket:", updatedTeam);
+            setTeam(updatedTeam);
+          }
+        });
+
+        socket.on("game-state-updated", (updatedTeams: Team[]) => {
+          console.log("Game state updated via WebSocket:", updatedTeams);
+        });
+
+        // Fetch team data based on the player's ID
+        const fetchTeamForPlayer = async () => {
+          try {
+            const response = await apiClient.get<Team>(`/api/lobby/teams/player/${player.id}`);
+            console.log("Team fetched for player:", response.data);
+            setTeam(response.data);
+          } catch (error) {
+            console.error("Error fetching team for player:", error);
+          }
+        };
+
+        fetchTeamForPlayer();
       } catch (error) {
-        console.error("Error fetching team for player:", error);
+        console.error("Error setting up WebSocket or fetching team data:", error);
       }
     };
 
-    fetchTeamForPlayer();
+    setupSocketAndFetchTeam();
 
-    // Cleanup WebSocket on unmount
+    // Cleanup WebSocket on component unmount
     return () => {
+      console.log("Disconnecting from WebSocket server");
       disconnectSocket();
     };
   }, [player, navigate, team?.id]);
@@ -81,7 +90,7 @@ export const GameBoardView: React.FC = () => {
     } catch (error) {
       console.error("Error ending game:", error);
     }
-  }
+  };
 
   return (
     <div className="game-board-view">

@@ -5,17 +5,16 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 let socket: Socket | null = null;
 
-export const initializeSocket = (): Socket => {
+export const initializeSocket = (): Promise<Socket> => {
   if (!socket) {
     socket = io(SERVER_URL, {
-      transports: ["websocket"], // Use WebSocket transport
-      reconnection: true, // Enable reconnection
-      reconnectionAttempts: 5, // Retry connection 5 times
-      reconnectionDelay: 1000, // Start with a 1-second delay between retries
-      timeout: 5000, // Connection timeout in milliseconds
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 5000,
     });
 
-    // Log connection events
     socket.on("connect", () => {
       console.log("WebSocket connected:", socket?.id);
     });
@@ -23,7 +22,6 @@ export const initializeSocket = (): Socket => {
     socket.on("disconnect", (reason: string) => {
       console.log("WebSocket disconnected:", reason);
       if (reason === "io server disconnect") {
-        // Reconnect manually if the server disconnected the client
         socket?.connect();
       }
     });
@@ -32,8 +30,17 @@ export const initializeSocket = (): Socket => {
       console.error("WebSocket connection error:", error);
     });
   }
-  return socket;
+
+  return new Promise((resolve, reject) => {
+    if (socket?.connected) {
+      resolve(socket);
+    } else {
+      socket?.once("connect", () => resolve(socket!));
+      socket?.once("connect_error", (error) => reject(error));
+    }
+  });
 };
+
 
 export const getSocket = (): Socket => {
   if (!socket) {
