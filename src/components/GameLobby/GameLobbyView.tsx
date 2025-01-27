@@ -39,36 +39,28 @@ export const GameLobbyView: React.FC = () => {
 
     const setupSocket = async () => {
       try {
-        const socket = await initializeSocket(); // Ensure socket is initialized
+        const socket = await initializeSocket();
         socket.on("connect", () => {
           console.log("Connected to WebSocket server:", socket.id);
-          socket.emit(
-            "join-lobby",
-            { playerId: player.id, playerName: player.name },
-            (ack: string) => console.log(ack)
+          socket.emit("join-lobby", { playerId: player.id, playerName: player.name }, (ack: string) =>
+            console.log(ack)
           );
-        });
-
-        socket.on("lobby-updated", (updatedLobby: Lobby) => {
-          console.log("Lobby updated via WebSocket:", updatedLobby);
-          setLobby(updatedLobby);
-        });
-
-        socket.on("player-added", (players: Player[]) => {
-          setLobby((prevLobby) => ({
-            ...prevLobby,
-            players,
-          }));
         });
 
         socket.on("game-started", () => {
           console.log("Game started via WebSocket");
           navigate("/board");
         });
+
+        socket.on("lobby-updated", (updatedLobby: Lobby) => {
+          console.log("Lobby updated via WebSocket:", updatedLobby);
+          setLobby(updatedLobby);
+        });
       } catch (error) {
         console.error("Error setting up WebSocket:", error);
       }
     };
+
 
     fetchLobby();
     setupSocket();
@@ -101,24 +93,22 @@ export const GameLobbyView: React.FC = () => {
 
   const handleGameStart = async () => {
     try {
-      const socket = await initializeSocket();
-      if (socket.connected) {
-        socket.emit("game-start", (ack: string) => {
-          console.log(ack);
-        });
-        navigate("/board");
-      }
-    } catch (error) {
-      console.error("Error starting game:", error);
+      const response = await apiClient.post("/api/game/start", {}, { withCredentials: true });
+      console.log("Game started successfully:", response.data);
+      navigate("/board");
+    } catch (error: any) {
+      console.error("Failed to start game:", error.response?.data || error.message);
+      alert(error.response?.data || "An error occurred. Please try again.");
     }
   };
 
+
   const handleSpotifyLogin = () => {
     // Save the current player in session storage (if needed)
-    sessionStorage.setItem("player", JSON.stringify(player));
+    // sessionStorage.setItem("player", JSON.stringify(player));
 
     // Redirect to Spotify login
-    window.location.href = "http://localhost:8080/api/spotify/login";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/spotify/login`;
   };
 
   const getVisibleTeams = () => {

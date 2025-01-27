@@ -1,4 +1,6 @@
+import React from "react";
 import { Song } from "../../../datatypes/Song";
+import styles from "./CardSlot.module.css";
 
 interface CardSlotProps {
   song: Song | null;
@@ -7,16 +9,16 @@ interface CardSlotProps {
 export const CardSlot: React.FC<CardSlotProps> = ({ song }) => {
   return (
     <div
-      className={`card-slot ${song ? "filled-slot" : "empty-slot"}`}
+      className={`${styles.cardSlot} ${song ? styles.filledSlot : styles.emptySlot}`}
     >
       {song ? (
         <>
-          <h4>{song.title}</h4>
-          <p>{song.artist}</p>
-          <p>{song.releaseYear}</p>
+          <h4 className={styles.songTitle}>{song.title}</h4>
+          <p className={styles.songArtist}>{song.artist}</p>
+          <p className={styles.songReleaseYear}>{song.releaseYear}</p>
         </>
       ) : (
-        <p className="placeholder">Empty Slot</p>
+        <p className={styles.placeholder}>Empty Slot</p>
       )}
     </div>
   );

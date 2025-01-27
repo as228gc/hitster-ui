@@ -1,0 +1,46 @@
+/* Card slot */
+.cardSlot {
+  width: 120px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Empty slot */
+.cardSlot .emptySlot {
+  background-color: #000000;
+  border: 2px dashed #aaa;
+}
+
+.placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+/* Filled slot */
+.cardSlot.filledSlot {
+  border: 2px solid #4caf50;
+  background-color: #e8f5e9;
+  color: #000000;
+}
+
+/* Song details */
+.song-title {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.song-artist,
+.song-release-year {
+  font-size: 0.9rem;
+  color: #555;
+}

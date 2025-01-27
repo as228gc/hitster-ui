@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { usePlayer } from "../../context/PlayerContext";
 import { useNavigate } from "react-router-dom";
 import { initializeSocket, disconnectSocket } from "../../config/socketConfig";
 import apiClient from "../../config/axiosConfig";
 import { Team } from "../../datatypes/Team";
+import { usePlayer } from "../../context/PlayerContext";
+import styles from "./GameBoardView.module.css";
+import { TeamTimeline } from "./TeamTimeline/TeamTimeline";
 
 export const GameBoardView: React.FC = () => {
   const { player } = usePlayer();
-  const [team, setTeam] = useState<Team | null>(null);
-  const [countdown, setCountdown] = useState<number>(3);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
 
   useEffect(() => {
     if (!player) {
@@ -18,112 +19,59 @@ export const GameBoardView: React.FC = () => {
       return;
     }
 
-    // Function to initialize WebSocket connection and fetch data
-    const setupSocketAndFetchTeam = async () => {
+    const fetchTeams = async () => {
       try {
-        const socket = await initializeSocket(); // Wait for WebSocket connection
+        const response = await apiClient.get("/api/game/state");
+        console.log("Teams fetched:", response.data);
+        setTeams(response.data);
 
-        // Set up WebSocket event listeners
-        socket.on("connect", () => {
-          console.log("Connected to WebSocket server:", socket.id);
-        });
+        // Find the current player's team
+        const playerTeam = response.data.find((team: Team) =>
+          team.players.some((teamPlayer) => teamPlayer.id === player.id)
+        );
 
-        socket.on("team-updated", (updatedTeam: Team) => {
-          if (updatedTeam.id === team?.id) {
-            console.log("Team updated via WebSocket:", updatedTeam);
-            setTeam(updatedTeam);
-          }
-        });
-
-        socket.on("game-state-updated", (updatedTeams: Team[]) => {
-          console.log("Game state updated via WebSocket:", updatedTeams);
-        });
-
-        // Fetch team data based on the player's ID
-        const fetchTeamForPlayer = async () => {
-          try {
-            const response = await apiClient.get<Team>(`/api/lobby/teams/player/${player.id}`);
-            console.log("Team fetched for player:", response.data);
-            setTeam(response.data);
-          } catch (error) {
-            console.error("Error fetching team for player:", error);
-          }
-        };
-
-        fetchTeamForPlayer();
+        if (playerTeam) {
+          setCurrentTeam(playerTeam);
+        } else {
+          console.warn("Player is not assigned to any team.");
+        }
       } catch (error) {
-        console.error("Error setting up WebSocket or fetching team data:", error);
+        console.error("Error fetching teams:", error);
       }
     };
 
-    setupSocketAndFetchTeam();
+    fetchTeams();
 
-    // Cleanup WebSocket on component unmount
+    // Cleanup WebSocket connection on unmount
+    initializeSocket();
     return () => {
-      console.log("Disconnecting from WebSocket server");
       disconnectSocket();
     };
-  }, [player, navigate, team?.id]);
+  }, [player, navigate]);
 
-  // Countdown logic
-  useEffect(() => {
-    if (countdown > 0 && !isPlaying) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (countdown === 0 && !isPlaying) {
-      setIsPlaying(true);
-    }
-  }, [countdown, isPlaying]);
-
-  if (!team) {
-    return <div>Loading your team's data...</div>;
+  if (!currentTeam) {
+    return <div>Loading your team's timeline...</div>;
   }
 
-  console.log("Team data:", team);
-  console.log("Team timeline:", team.timeline);
-  const currentSong = team.timeline[0]; // First song in the team's timeline
-
-  const handleEndGame = async () => {
+  const handleGameEnd = async () => {
     try {
-      await apiClient.post(`/api/game/end`);
-      navigate("/lobby");
+      await apiClient.post("/api/game/end");
+      navigate("/");
     } catch (error) {
       console.error("Error ending game:", error);
     }
-  };
+  }
 
   return (
-    <div className="game-board-view">
+    <div className={styles.gameBoardView}>
       <h1>Game Board</h1>
-      <h2>Team: {team.name}</h2>
+      <h2>Team: {currentTeam.name}</h2>
 
-      {isPlaying ? (
-        <div className="song-player">
-          <h3>Now Playing: {currentSong.title}</h3>
-          <audio controls autoPlay>
-            <source src={currentSong.url} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-      ) : (
-        <div className="countdown">
-          <h3>Starting in...</h3>
-          <h1>{countdown}</h1>
-        </div>
-      )}
+      <TeamTimeline team={currentTeam} />
+      
 
-      <div className="timeline">
-        <h3>Your Timeline</h3>
-        <ul>
-          {team.timeline.map((card, index) => (
-            <li key={index}>
-              {card.title} ({card.artist})
-            </li>
-          ))}
-        </ul>
-      </div>
 
-      <button onClick={handleEndGame}>End Game</button>
+      <button onClick={handleGameEnd}>End game</button>
     </div>
   );
 };

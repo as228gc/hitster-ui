@@ -1,0 +1,13 @@
+/* Timeline container */
+.timeline {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+}
+
